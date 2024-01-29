@@ -76,9 +76,16 @@ export default {
   },
   methods: {
     FileUpload(event) {
+
+      // const files = [];
+      // files.push(URL.createObjectURL(event.target.files))
+      // this.new_event.photo.push(files)
+
       const file = event.target.files[0];
       let buff = URL.createObjectURL(file);
       this.new_event.photo.push(buff)
+
+      // const file = event.dataTransfer.files;
     },
     event_add() {
       this.new_event.id = Date.now();
