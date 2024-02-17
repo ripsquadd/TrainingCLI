@@ -1,0 +1,55 @@
+<template>
+  <l-map style="height:600px; width:800px" ref="map" :zoom="zoom" :center="center" @click="addMarker">
+    <l-marker :lat-lng="markerPosition"></l-marker>
+    <l-tile-layer layer-type="base"
+                  name="OpenStreetMap"
+                  :url="url"
+                  :attribution="attribution">
+    </l-tile-layer>
+  </l-map>
+</template>
+
+<script>
+import { LMap, LTileLayer, LMarker } from '@vue-leaflet/vue-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet'
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+
+export default {
+  name: "IntMap",
+  emits: ['send_coords'],
+  components: {
+    LMap,
+    LTileLayer,
+    LMarker
+  },
+  data() {
+    return {
+      zoom: 11,
+      center: [56.4853, 84.9885],
+      url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      attribution: 'Spotlight',
+      x : 0,
+      y : 0,
+      markerPosition: [0, 0],
+    };
+  },
+  methods : {
+    addMarker(e) {
+      this.x = e.latlng.lat
+      this.y = e.latlng.lng
+      this.markerPosition = [this.x, this.y];
+      // this.$emit('send_coords', this.x, this.y);
+    }
+  }
+}
+</script>
+
+<style scoped>
+l-marker {
+  height: 10px;
+  width: 10px;
+  background: black;
+}
+</style>

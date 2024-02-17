@@ -13,12 +13,7 @@
         </div>
         <p>Краткое описание: {{event.short_detail}}</p>
         <p>Возрастное ограничение: {{event.age_rating}}</p>
-        <div class="type">
-          <p>Тип события:</p>
-          <p v-if="event.event_type == 1">Гаргулья</p>
-          <p v-if="event.event_type == 2">Поношенный пистолет</p>
-          <p v-if="event.event_type == 3">Монета</p>
-        </div>
+        <p>Тип события: {{event.event_type}}</p>
         <p>Тэги: {{event.event_tags}}</p>
         <p>Количество участвующих: {{event.souls_count}}</p>
         <p>Ссылки: {{event.link}}</p>
@@ -58,5 +53,9 @@ export default {
     margin: 10px;
     width: min-content;
     padding: 10px;
+  }
+  img {
+    width: 250px;
+    border: 5px solid black;
   }
 </style>

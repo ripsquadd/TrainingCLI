@@ -2,15 +2,17 @@
   <event-add @create="create_event"/>
   <event-map :events="events"
              @event_transfer_to_death="event_teleport_to_death"/>
+  <int-map/>
 </template>
 
 <script>
   import EventAdd from "@/components/EventAdd";
   import EventMap from "@/components/EventMap";
+  import IntMap from "@/components/IntMap";
   export default {
     name: "App",
     components: {
-      EventAdd, EventMap
+      EventAdd, EventMap, IntMap
     },
     data () {
       return {
@@ -52,9 +54,5 @@
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-  }
-  img {
-    width: 250px;
-    border: 5px solid black;
   }
 </style>

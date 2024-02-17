@@ -24,21 +24,23 @@
     <label for="age_rating">Возрастное ограничение</label>
     <input type="text" name="eventAgeRating" id="age_rating" v-model="new_event.age_rating">
 
-    <label for="event_type">Тип мероприятия</label>
-    <select name="eventType" id="event_type" v-model="new_event.event_type">
-      <option value="1">Гаргулья</option>
-      <option value="2">Поношенный пистолет</option>
-      <option value="3">Монета</option>
-    </select>
+    <label for="event_type">Тип события</label>
+    <input type="text" name="eventType" id="event_type" v-model="new_event.event_type">
 
     <label for="event_tags">Тэги</label>
-    <input type="event_tags" name="eventTags" id="event_tags" v-model="new_event.event_tags">
+    <input type="text" name="eventTags" id="event_tags" v-model="new_event.event_tags">
 
     <label for="souls_count">Количество участников</label>
-    <input type="souls_count" name="eventSoulsCount" id="souls_count" v-model="new_event.souls_count">
+    <input type="number" name="eventSoulsCount" id="souls_count" v-model="new_event.souls_count">
 
     <label for="link">Ссылка</label>
-    <input type="link" name="eventLink" id="link" v-model="new_event.link">
+    <input type="text" name="eventLink" id="link" v-model="new_event.link">
+
+    <label for="coord_x">Координата X</label>
+    <input type="number" name="eventCoordX" id="coord_x" v-model="new_event.coord_x">
+
+    <label for="coord_y">Координата Y</label>
+    <input type="number" name="eventCoordY" id="coord_y" v-model="new_event.coord_y">
 
     <button type="submit" @click="event_add">Добавить событие</button>
   </div>  <div v-if="form_on === 0" class="event-add">
@@ -48,6 +50,7 @@
 </template>
 
 <script>
+
 export default {
   name: "EventAdd",
   emits: ['create'],
@@ -71,7 +74,11 @@ export default {
         souls_count: '',
         link: '',
         selectedEvent: null,
+        coord_x: '',
+        coord_y: '',
       },
+      buffx: 0,
+      buffy: 0
     }
   },
   methods: {
@@ -87,6 +94,11 @@ export default {
 
       // const file = event.dataTransfer.files;
     },
+    // send_coords(x, y) {
+    //   this.buffx = x;
+    //   this.buffy = y;
+    //   console.log(this.buffx)
+    // },
     event_add() {
       this.new_event.id = Date.now();
       this.$emit('create', this.new_event);
@@ -103,6 +115,8 @@ export default {
         souls_count: '',
         link: '',
         selectedEvent : null,
+        coord_x: '',
+        coord_y: '',
       }
       this.new_event.photo = '';
       // this.form_on = 0;
@@ -123,5 +137,9 @@ export default {
     flex-wrap: nowrap;
     width: min-content;
     padding: 10px;
+  }
+  img {
+    width: 250px;
+    border: 5px solid black;
   }
 </style>
