@@ -1,5 +1,7 @@
 <template>
-  <l-map style="height:600px; width:800px" ref="map" :zoom="zoom" :center="center" @click="addMarker">
+  <l-map id="map" style="height:600px; width:800px" ref="map"
+         :zoom="zoom" :center="center"
+         @click="addMarker" @moveend="updateData">
     <l-marker :lat-lng="markerPosition"></l-marker>
     <l-tile-layer layer-type="base"
                   name="OpenStreetMap"
@@ -18,7 +20,6 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
 export default {
   name: "IntMap",
-  emits: ['send_coords'],
   components: {
     LMap,
     LTileLayer,
@@ -33,6 +34,11 @@ export default {
       x : 0,
       y : 0,
       markerPosition: [0, 0],
+      viewPoint : {
+        viewPointHeight: 0,
+        viewPointWidth: 0,
+      },
+      leftPoint : [0, 0],
     };
   },
   methods : {
@@ -40,8 +46,19 @@ export default {
       this.x = e.latlng.lat
       this.y = e.latlng.lng
       this.markerPosition = [this.x, this.y];
-      // this.$emit('send_coords', this.x, this.y);
+    },
+    updateData(event) {
+      this.center = event.target.getCenter();
+      console.log("Новая центральная точка карты: ", this.center);
+      this.leftPoint = event.target.getBounds().getNorthWest();
+      console.log("Новая верхняя левая точка карты: ", this.leftPoint);
+      this.viewPoint.viewPointHeight = document.getElementById('map').clientHeight;
+      this.viewPoint.viewPointWidth = document.getElementById('map').clientWidth;
+      console.log("Новые данные о Вьюпинте: ",this.viewPoint);
     }
+  },
+  mounted() {
+
   }
 }
 </script>

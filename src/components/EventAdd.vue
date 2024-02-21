@@ -53,7 +53,7 @@
 
 export default {
   name: "EventAdd",
-  emits: ['create'],
+  emits: ['create', 'coords'],
   props: {
     form_on: {
       type: Number
@@ -82,6 +82,9 @@ export default {
     }
   },
   methods: {
+    coords(x, y) {
+      console.log(x, y)
+    },
     FileUpload(event) {
 
       // const files = [];
