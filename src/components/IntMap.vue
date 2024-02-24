@@ -158,11 +158,6 @@ export default {
       }
       this.new_event.photo = '';
     },
-    addMarker(e) {
-      this.x = e.latlng.lat
-      this.y = e.latlng.lng
-      this.markerPosition = [this.x, this.y];
-    },
   },
   mounted() {
 
