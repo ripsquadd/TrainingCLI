@@ -1,7 +1,6 @@
 <template>
   <nav>
     <button>Создать событие</button>
-    <button>Отменить</button>
     <button>События</button>
   </nav>
 </template>

@@ -1,5 +1,8 @@
 <template>
   <div  class="event-add">
+    <div class="close-btn">
+      <button>X</button>
+    </div>
     <section>Новое событие</section>
     <div>
       <label for="photo" class="input-file">Загрузить изабражения</label>
@@ -194,6 +197,24 @@ l-marker {
   height: 10px;
   width: 10px;
   background: black;
+}
+.close-btn {
+  display: flex;
+  flex-direction: row-reverse;
+}
+.close-btn > button {
+  display: flex;
+  flex-direction: row-reverse;
+  margin: 5px;
+  border: none;
+  background: #1B1212;
+  color: #FFA500 ;
+  text-shadow: #FF5733 1px 0 15px;
+  font-size: 14pt;
+}
+.close-btn > button:hover {
+  color: #FF69B4;
+  text-shadow: #FF10F0 1px 0 20px;
 }
 .event-add {
   display: flex;

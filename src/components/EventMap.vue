@@ -2,6 +2,9 @@
   <div class="event-map">
     <div class="events" v-for="(event, id) in events">
       <div class="event-item"  v-if="event.id === selectedEvent">
+        <div class="close-btn">
+          <button>X</button>
+        </div>
         <div class="img-content">
           <img :src="event.photo">
         </div>
@@ -44,6 +47,24 @@ export default {
 </script>
 
 <style scoped>
+  .close-btn {
+    display: flex;
+    flex-direction: row-reverse;
+  }
+  .close-btn > button {
+    display: flex;
+    flex-direction: row-reverse;
+    margin: 5px;
+    border: none;
+    background: #1B1212;
+    color: #FFA500 ;
+    text-shadow: #FF5733 1px 0 15px;
+    font-size: 14pt;
+  }
+  .close-btn > button:hover {
+    color: #FF69B4;
+    text-shadow: #FF10F0 1px 0 20px;
+  }
   .event-item {
     display: flex;
     flex-direction: column;
