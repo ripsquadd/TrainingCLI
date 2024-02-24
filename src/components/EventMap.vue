@@ -1,7 +1,7 @@
 <template>
   <div class="event-map">
     <div class="events" v-for="(event, id) in events">
-      <div class="event-item">
+      <div class="event-item"  v-if="event.id === selectedEvent">
         <img :src="event.photo">
         <p class="event-title">{{event.title}}</p>
         <p v-if="event.place">Место проведения: {{event.place}}</p>
@@ -31,6 +31,9 @@ export default {
     events: {
       type: Array,
       required: true
+    },
+    selectedEvent : {
+
     }
   },
   methods: {

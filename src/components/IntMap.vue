@@ -46,7 +46,7 @@
     <button type="submit" @click="event_add">Добавить событие</button>
   </div>
   <event-map :events="events"
-             v-if="item.id === selectedEvent"
+             :selectedEvent="selectedEvent"
              @event_transfer_to_death="event_down"/>
   <l-map id="map" style="height:600px; width:800px" ref="map"
          :zoom="zoom" :center="center"
