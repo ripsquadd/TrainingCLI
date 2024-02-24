@@ -42,13 +42,16 @@
     <label for="coord_y">Координата Y</label>
     <input type="number" name="eventCoordY" id="coord_y" v-model="new_event.coord_y">
 
+
     <button type="submit" @click="event_add">Добавить событие</button>
   </div>
   <l-map id="map" style="height:600px; width:800px" ref="map"
          :zoom="zoom" :center="center"
-         @click="addMarker" @moveend="updateData">
-    <l-marker :lat-lng="markerPosition"
-              @move="updateMarkerLatLng"></l-marker>
+         @click="updateMarkerLatLng" @moveend="updateData">
+    <l-marker
+        v-for="(event_marker, id) in events"
+        :lat-lng="event_marker.coords"
+    ></l-marker>
     <l-tile-layer layer-type="base"
                   name="OpenStreetMap"
                   :url="url"
@@ -67,6 +70,12 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 export default {
   name: "IntMap",
   emits: ['create'],
+  props: {
+    events: {
+      type: Array,
+      required: true
+    }
+  },
   components: {
     LMap,
     LTileLayer,
@@ -101,19 +110,16 @@ export default {
         selectedEvent: null,
         coord_x: '',
         coord_y: '',
+        coords: '',
       },
     };
   },
   methods : {
-    addMarker(e) {
-      this.x = e.latlng.lat
-      this.y = e.latlng.lng
-      this.markerPosition = [this.x, this.y];
-    },
     updateMarkerLatLng(event) {
-      this.markerPosition = [event.target._latlng.lat, event.target._latlng.lng];
+      this.markerPosition = [event.latlng.lat, event.latlng.lng];
       this.new_event.coord_x = this.markerPosition[0];
       this.new_event.coord_y = this.markerPosition[1];
+      this.new_event.coords = this.markerPosition;
       console.log("Новые координаты маркера: ",this.markerPosition)
     },
     updateData(event) {
@@ -148,8 +154,14 @@ export default {
         selectedEvent : null,
         coord_x: '',
         coord_y: '',
+        coords: '',
       }
       this.new_event.photo = '';
+    },
+    addMarker(e) {
+      this.x = e.latlng.lat
+      this.y = e.latlng.lng
+      this.markerPosition = [this.x, this.y];
     },
   },
   mounted() {

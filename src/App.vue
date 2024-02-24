@@ -1,7 +1,8 @@
 <template>
   <event-map :events="events"
              @event_transfer_to_death="event_teleport_to_death"/>
-  <int-map @create="create_event"/>
+  <int-map :events="events"
+      @create="create_event"/>
 </template>
 
 <script>
@@ -23,6 +24,7 @@
       create_event(new_event) {
         this.events.push(new_event)
         this.save();
+        console.log(this.events)
       },
       add_form_show() {
         this.form_on = 1;
