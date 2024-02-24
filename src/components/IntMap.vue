@@ -1,48 +1,51 @@
 <template>
   <div  class="event-add">
     <section>Новое событие</section>
-
-    <label for="photo">Фото события</label>
-    <input type="file" name="eventPhoto" id="photo" accept="image/png, image/jpeg, image/jpg" multiple
-           @change="FileUpload">
-    <img :src="new_event.photo" v-if="new_event.photo">
-    <label for="title" >Название события</label>
-    <input type="text" name="eventTitle" id="title" v-model="new_event.title">
-
-    <label for="place">Место проведения</label>
-    <input type="text" name="eventPlace" id="place" v-model="new_event.place">
-
-    <label for="date">Дата проведения</label>
-    <input type="date" name="eventDate" id="date" v-model="new_event.date">
-
-    <label for="time">Время проведения</label>
-    <input type="time" name="eventTime" id="time" v-model="new_event.time">
-
-    <label for="short_detail">Краткое описание</label>
-    <input type="text" name="eventShortDetail" id="short_detail" v-model="new_event.short_detail">
-
-    <label for="age_rating">Возрастное ограничение</label>
-    <input type="text" name="eventAgeRating" id="age_rating" v-model="new_event.age_rating">
-
-    <label for="event_type">Тип события</label>
-    <input type="text" name="eventType" id="event_type" v-model="new_event.event_type">
-
-    <label for="event_tags">Тэги</label>
-    <input type="text" name="eventTags" id="event_tags" v-model="new_event.event_tags">
-
-    <label for="souls_count">Количество участников</label>
-    <input type="number" name="eventSoulsCount" id="souls_count" v-model="new_event.souls_count">
-
-    <label for="link">Ссылка</label>
-    <input type="text" name="eventLink" id="link" v-model="new_event.link">
-
-    <label for="coord_x">Координата X</label>
-    <input type="number" name="eventCoordX" id="coord_x" v-model="new_event.coord_x">
-
-    <label for="coord_y">Координата Y</label>
-    <input type="number" name="eventCoordY" id="coord_y" v-model="new_event.coord_y">
-
-
+    <div>
+      <label for="photo" class="input-file">Загрузить изабражения</label>
+      <input type="file" name="eventPhoto" id="photo" accept="image/png, image/jpeg, image/jpg"
+             @change="FileUpload" style="display: none;">
+    </div>
+    <div>
+      <label for="title" >Название события</label>
+      <input type="text" name="eventTitle" id="title" v-model="new_event.title">
+    </div>
+    <div>
+      <label for="place">Место проведения</label>
+      <input type="text" name="eventPlace" id="place" v-model="new_event.place">
+    </div>
+    <div>
+      <label for="date">Дата проведения</label>
+      <input type="date" name="eventDate" id="date" v-model="new_event.date">
+    </div>
+    <div>
+      <label for="time">Время проведения</label>
+      <input type="time" name="eventTime" id="time" v-model="new_event.time">
+    </div>
+    <div>
+      <label for="short_detail">Краткое описание</label>
+      <input type="text" name="eventShortDetail" id="short_detail" v-model="new_event.short_detail">
+    </div>
+    <div>
+      <label for="age_rating">Возрастное ограничение</label>
+      <input type="text" name="eventAgeRating" id="age_rating" v-model="new_event.age_rating">
+    </div>
+    <div>
+      <label for="event_type">Тип события</label>
+      <input type="text" name="eventType" id="event_type" v-model="new_event.event_type">
+    </div>
+    <div>
+      <label for="event_tags">Тэги</label>
+      <input type="text" name="eventTags" id="event_tags" v-model="new_event.event_tags">
+    </div>
+    <div>
+      <label for="souls_count">Количество участников</label>
+      <input type="number" name="eventSoulsCount" id="souls_count" v-model="new_event.souls_count">
+    </div>
+    <div>
+      <label for="link">Ссылка</label>
+      <input type="text" name="eventLink" id="link" v-model="new_event.link">
+    </div>
     <button type="submit" @click="event_add">Добавить событие</button>
   </div>
   <event-map :events="events"
@@ -68,9 +71,6 @@
 import { LMap, LTileLayer, LMarker } from '@vue-leaflet/vue-leaflet';
 import EventMap from "@/components/EventMap";
 import 'leaflet/dist/leaflet.css';
-import L from 'leaflet'
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
 export default {
   name: "IntMap",
@@ -102,6 +102,7 @@ export default {
       },
       leftPoint : [0, 0],
       selectedEvent: null,
+      imageUrl: '',
       new_event: {
         id: '',
         photo: [],
@@ -196,18 +197,72 @@ l-marker {
 }
 .event-add {
   display: flex;
-  align-items: flex-start;
-  justify-content: center;
+  align-items: stretch;
   flex-direction: column;
-  border: 5px solid black;
   margin: 10px;
   border-radius: 5px;
   flex-wrap: nowrap;
+  width: -moz-min-content;
   width: min-content;
   padding: 10px;
+  background: #1B1212;
+  font-size: 14pt;
+  justify-content: space-between;
+}
+.event-add > div {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  flex-wrap: nowrap;
+}
+.event-add > section {
+  color: #EADDCA ;
+  text-shadow: #FF5733 1px 0 15px;
+  text-align: center;
+  font-size: 20pt;
+}
+.event-add > div > label {
+  color: #EADDCA ;
+  text-shadow: #F88379 1px 0 15px;
+  padding: 10px;
+  width: max-content;
+}
+.event-add > div > input {
+  color: #EADDCA ;
+  background: black;
+  border: none;
+  border-radius: 5px;
+  height: 20px;
+}
+.event-add > button {
+  margin: 10px;
+  border: none;
+  background: #1B1212;
+  color: #FFA500 ;
+  text-shadow: #FF5733 1px 0 15px;
+  font-size: 14pt;
+}
+.event-add > div > button:hover  {
+  color: #FF69B4;
+  text-shadow: #FF10F0 1px 0 20px;
+}
+.input-file {
+  color: #EADDCA ;
+  background: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.input-file:hover {
+  color: #FF69B4;
+  text-shadow: #FF10F0 1px 0 20px;
 }
 img {
   width: 250px;
-  border: 5px solid black;
+  height: 250px;
+  background: #1B1212;
+}
+#map {
+  z-index: 0;
 }
 </style>

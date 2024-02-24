@@ -1,17 +1,22 @@
 <template>
-  <int-map :events="events"
-      @create="create_event"
-      @event_delete="event_teleport_to_death"
-  />
+  <top-bar/>
+  <div class="content">
+    <int-map :events="events"
+             @create="create_event"
+             @event_delete="event_teleport_to_death"
+    />
+  </div>
 </template>
 
 <script>
   import EventAdd from "@/components/EventAdd";
   import EventMap from "@/components/EventMap";
   import IntMap from "@/components/IntMap";
+  import TopBar from "@/components/TopBar";
   export default {
     name: "App",
     components: {
+      TopBar,
       EventAdd, EventMap, IntMap
     },
     data () {
@@ -51,9 +56,24 @@
 </script>
 
 <style>
+  @font-face {
+    font-family: "TF2 Build";
+    src: url("../public/assets/tf2build.ttf");
+  }
   #app {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: flex-start;
+    font-family: "TF2 Build", Serif;
+  }
+  .content {
+    display: flex;
+  }
+  body {
+    background: #362d26;
+  }
+  button {
+    cursor: pointer;
+    font-family: "TF2 Build", Serif;
   }
 </style>
