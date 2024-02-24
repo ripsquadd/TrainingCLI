@@ -45,12 +45,16 @@
 
     <button type="submit" @click="event_add">Добавить событие</button>
   </div>
+  <event-map :events="events"
+             v-if="selectedEvent === events"
+             @event_transfer_to_death="event_down"/>
   <l-map id="map" style="height:600px; width:800px" ref="map"
          :zoom="zoom" :center="center"
          @click="updateMarkerLatLng" @moveend="updateData">
     <l-marker
         v-for="(event_marker, id) in events"
         :lat-lng="event_marker.coords"
+        @click="showDescription(events)"
     ></l-marker>
     <l-tile-layer layer-type="base"
                   name="OpenStreetMap"
@@ -62,6 +66,7 @@
 
 <script>
 import { LMap, LTileLayer, LMarker } from '@vue-leaflet/vue-leaflet';
+import EventMap from "@/components/EventMap";
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet'
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -69,17 +74,18 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
 export default {
   name: "IntMap",
-  emits: ['create'],
+  emits: ['create', 'event_delete'],
   props: {
     events: {
       type: Array,
       required: true
-    }
+    },
   },
   components: {
     LMap,
     LTileLayer,
-    LMarker
+    LMarker,
+    EventMap
   },
   data() {
     return {
@@ -95,6 +101,7 @@ export default {
         viewPointWidth: 0,
       },
       leftPoint : [0, 0],
+      selectedEvent: null,
       new_event: {
         photo: [],
         title: '',
@@ -158,9 +165,16 @@ export default {
       }
       this.new_event.photo = '';
     },
+    event_down(id) {
+      this.$emit('event_delete', id);
+    },
+    showDescription(events) {
+      this.selectedEvent = events;
+      console.log(events)
+    },
+
   },
   mounted() {
-
   }
 }
 </script>
