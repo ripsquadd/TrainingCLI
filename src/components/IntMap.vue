@@ -2,7 +2,8 @@
   <l-map id="map" style="height:600px; width:800px" ref="map"
          :zoom="zoom" :center="center"
          @click="addMarker" @moveend="updateData">
-    <l-marker :lat-lng="markerPosition"></l-marker>
+    <l-marker :lat-lng="markerPosition"
+              @move="updateMarkerLatLng"></l-marker>
     <l-tile-layer layer-type="base"
                   name="OpenStreetMap"
                   :url="url"
@@ -46,6 +47,10 @@ export default {
       this.x = e.latlng.lat
       this.y = e.latlng.lng
       this.markerPosition = [this.x, this.y];
+    },
+    updateMarkerLatLng(event) {
+      this.markerPosition = [event.target._latlng.lat, event.target._latlng.lng];
+      console.log("Новые координаты маркера: ",this.markerPosition)
     },
     updateData(event) {
       this.center = event.target.getCenter();
