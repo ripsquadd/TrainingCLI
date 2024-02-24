@@ -43,10 +43,7 @@
     <input type="number" name="eventCoordY" id="coord_y" v-model="new_event.coord_y">
 
     <button type="submit" @click="event_add">Добавить событие</button>
-  </div>  <div v-if="form_on === 0" class="event-add">
-
-  <button type="submit" @click="event_add">Добавить событие</button>
-</div>
+  </div>
 </template>
 
 <script>

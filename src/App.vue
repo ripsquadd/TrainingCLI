@@ -1,8 +1,7 @@
 <template>
-  <event-add @create="create_event"/>
   <event-map :events="events"
              @event_transfer_to_death="event_teleport_to_death"/>
-  <int-map/>
+  <int-map @create="create_event"/>
 </template>
 
 <script>
