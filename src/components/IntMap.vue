@@ -46,7 +46,7 @@
     <button type="submit" @click="event_add">Добавить событие</button>
   </div>
   <event-map :events="events"
-             v-if="selectedEvent === events"
+             v-if="item.id === selectedEvent"
              @event_transfer_to_death="event_down"/>
   <l-map id="map" style="height:600px; width:800px" ref="map"
          :zoom="zoom" :center="center"
@@ -54,7 +54,7 @@
     <l-marker
         v-for="(event_marker, id) in events"
         :lat-lng="event_marker.coords"
-        @click="showDescription(events)"
+        @click="showDescription(event_marker.id)"
     ></l-marker>
     <l-tile-layer layer-type="base"
                   name="OpenStreetMap"
@@ -103,6 +103,7 @@ export default {
       leftPoint : [0, 0],
       selectedEvent: null,
       new_event: {
+        id: '',
         photo: [],
         title: '',
         place: '',
@@ -168,13 +169,21 @@ export default {
     event_down(id) {
       this.$emit('event_delete', id);
     },
-    showDescription(events) {
-      this.selectedEvent = events;
-      console.log(events)
+    showDescription(id) {
+      this.selectedEvent = id;
+      console.log(this.selectedEvent);
+      this.item(this.selectedEvent);
     },
-
+    item(selectedId) {
+      console.log(selectedId)
+      return this.events.find(item => item.id === selectedId);
+    },
   },
   mounted() {
+
+  },
+  computed: {
+
   }
 }
 </script>
