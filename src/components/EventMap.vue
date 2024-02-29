@@ -112,8 +112,8 @@ export default {
   }
   .event-map {
     position: absolute;
-    left: 40%;
-    top: 15%;
+    right: 2%;
+    top: 16%;
     z-index: 1;
   }
   .event-title {

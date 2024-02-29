@@ -1,6 +1,6 @@
 <template>
   <nav>
-    <button>Создать событие</button>
+    <button @click="showEventAddFormEmit">Создать событие</button>
     <button>Создать место</button>
     <button>Создать организацию</button>
     <button>События</button>
@@ -12,7 +12,13 @@
 
 <script>
 export default {
-  name: "TopBar"
+  name: "TopBar",
+  emits: ['event_add_form_show'],
+  methods: {
+    showEventAddFormEmit () {
+      this.$emit('event_add_form_show');
+    },
+  }
 }
 </script>
 

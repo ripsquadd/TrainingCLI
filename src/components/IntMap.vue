@@ -1,7 +1,7 @@
 <template>
-  <div  class="event-add">
+  <div  class="event-add" v-if="event_form_on">
     <div class="close-btn">
-      <button>X</button>
+      <button @click="closeEventAddFormEmit">X</button>
     </div>
     <section>Новое событие</section>
     <div>
@@ -57,7 +57,7 @@
              @event_transfer_to_death="event_down"
              @event_close="eventClose"
   />
-  <l-map id="map" ref="map" style="width:800px;height:600px;"
+  <l-map id="map" ref="map" style="width:96vw;height:600px;"
          :zoom="zoom" :center="center"
          @click="updateMarkerLatLng" @moveend="updateData">
     <l-marker
@@ -80,12 +80,15 @@ import 'leaflet/dist/leaflet.css';
 
 export default {
   name: "IntMap",
-  emits: ['create', 'event_delete'],
+  emits: ['create', 'event_delete', 'event_add_form_close'],
   props: {
     events: {
       type: Array,
       required: true
     },
+    event_form_on: {
+      type: Boolean
+    }
   },
   components: {
     LMap,
@@ -189,6 +192,9 @@ export default {
       console.log(selectedId)
       return this.events.find(item => item.id === selectedId);
     },
+    closeEventAddFormEmit() {
+      this.$emit('event_add_form_close');
+    }
   },
   mounted() {
 

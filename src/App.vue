@@ -1,9 +1,13 @@
 <template>
-  <top-bar/>
+  <top-bar
+      @event_add_form_show="eventFormShow"
+  />
   <div class="content">
     <int-map :events="events"
+             :event_form_on="event_form_on"
              @create="create_event"
              @event_delete="event_teleport_to_death"
+             @event_add_form_close="eventFormClose"
     />
   </div>
 </template>
@@ -22,10 +26,16 @@
     data () {
       return {
         events: [],
-        form_on : 0,
+        event_form_on : false,
       }
     },
     methods: {
+      eventFormShow() {
+        this.event_form_on = true;
+      },
+      eventFormClose() {
+        this.event_form_on = false;
+      },
       create_event(new_event) {
         this.events.push(new_event)
         this.save();
