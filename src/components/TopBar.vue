@@ -8,6 +8,18 @@
         <li><button>Организацию</button></li>
       </ul>
     </div>
+    <div>
+      <button @click="toggleSortMenu">Показать</button>
+      <ul v-if="showSortMenu">
+        <li><button>Всё</button></li>
+        <li><button>Событие</button></li>
+        <li><button>Место</button></li>
+        <li><button>Организацию</button></li>
+      </ul>
+    </div>
+    <div>
+      <button>Авторизация</button>
+    </div>
   </nav>
 </template>
 
@@ -17,12 +29,18 @@ export default {
   emits: ['event_add_form_show'],
   data() {
     return {
-      showCreateMenu: false
+      showCreateMenu: false,
+      showSortMenu: false,
     };
   },
   methods: {
     toggleCreateMenu() {
       this.showCreateMenu = !this.showCreateMenu;
+      this.showSortMenu = false;
+    },
+    toggleSortMenu() {
+      this.showSortMenu = !this.showSortMenu;
+      this.showCreateMenu = false;
     },
     showEventAddFormEmit () {
       this.showCreateMenu = !this.showCreateMenu;
