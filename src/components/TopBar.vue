@@ -1,26 +1,35 @@
 <template>
-  <nav>
-    <div>
-      <button @click="toggleCreateMenu">Создать</button>
-      <ul v-if="showCreateMenu">
-        <li><button @click="showEventAddFormEmit">Событие</button></li>
-        <li><button>Место</button></li>
-        <li><button>Организацию</button></li>
-      </ul>
-    </div>
-    <div>
-      <button @click="toggleSortMenu">Показать</button>
-      <ul v-if="showSortMenu">
-        <li><button>Всё</button></li>
-        <li><button>Событие</button></li>
-        <li><button>Место</button></li>
-        <li><button>Организацию</button></li>
-      </ul>
-    </div>
-    <div>
-      <button>Авторизация</button>
-    </div>
-  </nav>
+  <div class="pre-nav">
+    <a href="#">
+      <img class="logo"
+           :src="imageSrc"
+           @mouseover="changeImage"
+           @mouseleave="restoreImage"
+           alt="logo">
+    </a>
+    <nav>
+      <div>
+        <button @click="toggleCreateMenu">Создать</button>
+        <ul v-if="showCreateMenu">
+          <li><button @click="showEventAddFormEmit">Событие</button></li>
+          <li><button>Место</button></li>
+          <li><button>Организацию</button></li>
+        </ul>
+      </div>
+      <div>
+        <button @click="toggleSortMenu">Показать</button>
+        <ul v-if="showSortMenu">
+          <li><button>Всё</button></li>
+          <li><button>Событие</button></li>
+          <li><button>Место</button></li>
+          <li><button>Организацию</button></li>
+        </ul>
+      </div>
+      <div>
+        <button>Авторизация</button>
+      </div>
+    </nav>
+  </div>
 </template>
 
 <script>
@@ -29,11 +38,20 @@ export default {
   emits: ['event_add_form_show'],
   data() {
     return {
+      originalImageSrc: require("./components_assets/logo.png"),
+      hoverImageSrc: require("./components_assets/logo_alt.png"),
+      imageSrc: require("./components_assets/logo.png"),
       showCreateMenu: false,
       showSortMenu: false,
     };
   },
   methods: {
+    changeImage() {
+      this.imageSrc = this.hoverImageSrc;
+    },
+    restoreImage() {
+      this.imageSrc = this.originalImageSrc;
+    },
     toggleCreateMenu() {
       this.showCreateMenu = !this.showCreateMenu;
       this.showSortMenu = false;
@@ -75,5 +93,18 @@ button:hover {
 ul {
   list-style-type: none;
   padding-left: 0;
+}
+.logo {
+  width: 128px;
+  height: 128px;
+}
+.pre-nav {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  position: absolute;
+  z-index: 1;
+  left: 5%
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <top-bar
+  <top-bar v-if="top_bar_on"
       @event_add_form_show="eventFormShow"
   />
   <div class="content">
@@ -10,6 +10,7 @@
              @event_add_form_close="eventFormClose"
     />
   </div>
+  <custom-footer/>
 </template>
 
 <script>
@@ -17,23 +18,26 @@
   import EventMap from "@/components/EventMap";
   import IntMap from "@/components/IntMap";
   import TopBar from "@/components/TopBar";
+  import CustomFooter from "@/components/CustomFooter";
   export default {
     name: "App",
     components: {
-      TopBar,
-      EventAdd, EventMap, IntMap
+      TopBar, EventAdd, EventMap, IntMap, CustomFooter
     },
     data () {
       return {
         events: [],
+        top_bar_on: true,
         event_form_on : false,
       }
     },
     methods: {
       eventFormShow() {
+        this.top_bar_on = false;
         this.event_form_on = true;
       },
       eventFormClose() {
+        this.top_bar_on = true;
         this.event_form_on = false;
       },
       create_event(new_event) {
@@ -81,6 +85,7 @@
   }
   body {
     background: #362d26;
+    overflow-x:hidden;
   }
   button {
     cursor: pointer;

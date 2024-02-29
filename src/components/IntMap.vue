@@ -57,7 +57,7 @@
              @event_transfer_to_death="event_down"
              @event_close="eventClose"
   />
-  <l-map id="map" ref="map" style="width:96vw;height:600px;"
+  <l-map id="map" ref="map" style="width:97vw;height:600px;"
          :zoom="zoom" :center="center"
          @click="updateMarkerLatLng" @moveend="updateData">
     <l-marker
@@ -176,6 +176,7 @@ export default {
         coords: '',
       }
       this.new_event.photo = '';
+      this.$emit('event_add_form_close');
     },
     event_down(id) {
       this.$emit('event_delete', id);
@@ -242,6 +243,10 @@ l-marker {
   background: #1B1212;
   font-size: 14pt;
   justify-content: space-between;
+  z-index: 2;
+  position: absolute;
+  left: 5%;
+  top: 6%;
 }
 .event-add > div {
   display: flex;

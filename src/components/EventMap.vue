@@ -77,7 +77,7 @@ export default {
     flex-wrap: nowrap;
     border-radius: 5px;
     margin: 0;
-    width: max-content;
+    width: 400px;
     padding: 10px;
     background: #1B1212;
     font-size: 12pt;
@@ -108,12 +108,12 @@ export default {
     flex-direction: row;
   }
   img {
-    width: 250px;
+    height: 128px;
   }
   .event-map {
     position: absolute;
     right: 2%;
-    top: 16%;
+    top: 7.5%;
     z-index: 1;
   }
   .event-title {
