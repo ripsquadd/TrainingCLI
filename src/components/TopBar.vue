@@ -1,12 +1,13 @@
 <template>
   <nav>
-    <button @click="showEventAddFormEmit">Создать событие</button>
-    <button>Создать место</button>
-    <button>Создать организацию</button>
-    <button>События</button>
-    <button>Места</button>
-    <button>Организации</button>
-    <button>Авторизация</button>
+    <div>
+      <button @click="toggleCreateMenu">Создать</button>
+      <ul v-if="showCreateMenu">
+        <li><button @click="showEventAddFormEmit">Событие</button></li>
+        <li><button>Место</button></li>
+        <li><button>Организацию</button></li>
+      </ul>
+    </div>
   </nav>
 </template>
 
@@ -14,8 +15,17 @@
 export default {
   name: "TopBar",
   emits: ['event_add_form_show'],
+  data() {
+    return {
+      showCreateMenu: false
+    };
+  },
   methods: {
+    toggleCreateMenu() {
+      this.showCreateMenu = !this.showCreateMenu;
+    },
     showEventAddFormEmit () {
+      this.showCreateMenu = !this.showCreateMenu;
       this.$emit('event_add_form_show');
     },
   }
@@ -33,15 +43,19 @@ nav {
   border-radius: 5px;
   font-family: "TF2 Build", Serif;
 }
-nav > button {
+button {
   border: none;
   background: #1B1212;
   font-size: 20pt;
   color: #FFA500 ;
   text-shadow: #FF5733 1px 0 15px;
 }
-nav > button:hover {
+button:hover {
   color: #FF69B4;
   text-shadow: #FF10F0 1px 0 20px;
+}
+ul {
+  list-style-type: none;
+  padding-left: 0;
 }
 </style>
