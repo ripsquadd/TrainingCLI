@@ -1,9 +1,9 @@
 <template>
-  <div class="event-map">
+  <div class="event-map" ref="eventmap">
     <div class="events" v-for="(event, id) in events">
       <div class="event-item"  v-if="event.id === selectedEvent">
         <div class="close-btn">
-          <button>X</button>
+          <button @click="closeEventEmit">X</button>
         </div>
         <div class="img-content">
           <img :src="event.photo">
@@ -19,6 +19,7 @@
         <div class="first">Количество участвующих: <p class="second">{{event.souls_count}}</p></div>
         <p class="link-content">Ссылка: <a href="{{event.link}}">{{event.link}}</a> </p>
         <button>Участвовать</button>
+        <button>Редактировать событие</button>
         <button @click="eventDelete(id)">Удалить событие</button>
       </div>
     </div>
@@ -28,7 +29,7 @@
 <script>
 export default {
   name: "EventMap",
-  emits: ['event_transfer_to_death'],
+  emits: ['event_transfer_to_death', 'event_close'],
   props: {
     events: {
       type: Array,
@@ -36,13 +37,16 @@ export default {
     },
     selectedEvent : {
 
-    }
+    },
   },
   methods: {
     eventDelete(id) {
       this.$emit('event_transfer_to_death', id);
     },
-  }
+    closeEventEmit() {
+      this.$emit('event_close');
+    },
+  },
 }
 </script>
 
@@ -109,7 +113,7 @@ export default {
   .event-map {
     position: absolute;
     left: 40%;
-    top: 10%;
+    top: 15%;
     z-index: 1;
   }
   .event-title {

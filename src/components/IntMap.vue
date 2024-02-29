@@ -51,10 +51,13 @@
     </div>
     <button type="submit" @click="event_add">Добавить событие</button>
   </div>
-  <event-map :events="events"
+  <event-map :events="events" v-if="showEvent"
              :selectedEvent="selectedEvent"
-             @event_transfer_to_death="event_down"/>
-  <l-map id="map" style="height:600px; width:800px" ref="map"
+             :showEvent="showEvent"
+             @event_transfer_to_death="event_down"
+             @event_close="eventClose"
+  />
+  <l-map id="map" ref="map" style="width:800px;height:600px;"
          :zoom="zoom" :center="center"
          @click="updateMarkerLatLng" @moveend="updateData">
     <l-marker
@@ -92,6 +95,7 @@ export default {
   },
   data() {
     return {
+      showEvent: true,
       zoom: 11,
       center: [56.4853, 84.9885],
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -175,8 +179,11 @@ export default {
     },
     showDescription(id) {
       this.selectedEvent = id;
-      console.log(this.selectedEvent);
+      this.showEvent = true;
       this.item(this.selectedEvent);
+    },
+    eventClose() {
+      this.showEvent = false;
     },
     item(selectedId) {
       console.log(selectedId)
@@ -285,5 +292,7 @@ img {
 }
 #map {
   z-index: 0;
+  margin:10px;
+  border-radius:5px;
 }
 </style>

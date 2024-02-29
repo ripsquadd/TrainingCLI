@@ -1,7 +1,12 @@
 <template>
   <nav>
     <button>Создать событие</button>
+    <button>Создать место</button>
+    <button>Создать организацию</button>
     <button>События</button>
+    <button>Места</button>
+    <button>Организации</button>
+    <button>Авторизация</button>
   </nav>
 </template>
 
