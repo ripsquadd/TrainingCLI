@@ -12,8 +12,8 @@
         <button @click="toggleCreateMenu">Создать</button>
         <ul v-if="showCreateMenu">
           <li><button @click="showEventAddFormEmit">Событие</button></li>
-          <li><button>Место</button></li>
-          <li><button>Организацию</button></li>
+          <li><button @click="showPlaceAddFormEmit">Место</button></li>
+          <li><button @click="showOrganizationAddFormEmit">Организацию</button></li>
         </ul>
       </div>
       <div>
@@ -35,7 +35,7 @@
 <script>
 export default {
   name: "TopBar",
-  emits: ['event_add_form_show'],
+  emits: ['event_add_form_show', 'place_add_form_show', 'organization_add_form_show'],
   data() {
     return {
       originalImageSrc: require("./components_assets/logo.png"),
@@ -64,6 +64,14 @@ export default {
       this.showCreateMenu = !this.showCreateMenu;
       this.$emit('event_add_form_show');
     },
+    showPlaceAddFormEmit() {
+      this.showCreateMenu = !this.showCreateMenu;
+      this.$emit('place_add_form_show');
+    },
+    showOrganizationAddFormEmit() {
+      this.showCreateMenu = !this.showCreateMenu;
+      this.$emit('organization_add_form_show');
+    }
   }
 }
 </script>

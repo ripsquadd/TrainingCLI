@@ -83,7 +83,7 @@
 <script>
 export default {
   name: "EventMap",
-  emits: ['event_transfer_to_death', 'event_close', 'event_taking_part', 'event_un_parting', 'save_edit'],
+  emits: ['event_transfer_to_death', 'event_close', 'event_taking_part', 'event_un_parting', 'save_event_edit'],
   props: {
     events: {
       type: Array,
@@ -172,7 +172,7 @@ export default {
       this.edit_event.coords = this.events[id].coords;
     },
     save_event() {
-      this.$emit('save_edit', this.edit_event, this.buffId);
+      this.$emit('save_event_edit', this.edit_event, this.buffId);
       this.event_edit_form = !this.event_edit_form;
     }
   },
@@ -304,7 +304,7 @@ export default {
     margin-bottom: 10px;
   }
   .event-edit > div > label {
-    color: #C4A484 ;
+    color: #C4A484;
     padding: 10px;
     width: max-content;
   }

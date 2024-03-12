@@ -5,6 +5,9 @@
     </div>
     <section>Новое событие</section>
     <div>
+      <p>Нажмите на карту чтобы выбрать координаты события</p>
+    </div>
+    <div>
       <label for="photo" class="input-file">Загрузить изображения</label>
       <input type="file" name="eventPhoto" id="photo" accept="image/png, image/jpeg, image/jpg"
              @change="FileUploadEvent" style="display: none;">
@@ -52,7 +55,37 @@
     <button type="submit" @click="event_add">Добавить событие</button>
   </div>
 
-
+  <div  class="event-add" v-if="place_form_on">
+    <div class="close-btn">
+      <button @click="closePlaceAddFormEmit">X</button>
+    </div>
+    <section>Новое место</section>
+    <div>
+      <p>Нажмите на карту чтобы выбрать координаты места</p>
+    </div>
+    <div>
+      <label for="photo" class="input-file">Загрузить изображения</label>
+      <input type="file" name="eventPhoto" id="photo" accept="image/png, image/jpeg, image/jpg"
+             @change="FileUploadPlace" style="display: none;">
+    </div>
+    <div>
+      <label for="title" >Название места</label>
+      <input type="text" name="eventTitle" id="title" v-model="new_place.name">
+    </div>
+    <div>
+      <label for="place">Описание места</label>
+      <input type="text" name="eventPlace" id="place" v-model="new_place.description">
+    </div>
+    <div>
+      <label for="placeAddress">Адрес</label>
+      <input type="text" name="placeAddress" id="place_address" v-model="new_place.address">
+    </div>
+    <div>
+      <label for="placeType">Тип места</label>
+      <input type="text" name="placeType" id="place_type" v-model="new_place.place_type">
+    </div>
+    <button type="submit" @click="place_add">Добавить место</button>
+  </div>
 
   <event-map :events="events" v-if="showEvent"
              :selectedEvent="selectedEvent"
@@ -61,17 +94,33 @@
              @event_close="eventClose"
              @event_taking_part="eventTakingPart"
              @event_un_parting="eventUnParting"
-             @save_edit="saveNewEventData"
+             @save_event_edit="saveNewEventData"
   />
+
+  <place-window :places="places" v-if="showPlace"
+             :selectedPlace="selectedPlace"
+             :showPlace="showPlace"
+             @place_transfer_to_death="place_down"
+             @place_close="placeClose"
+             @save_place_edit="saveNewPlacetData"
+  />
+
   <l-map id="map" ref="map" style="width:97vw;height:600px;"
          :zoom="zoom" :center="center"
          @click="updateMarkerLatLng" @moveend="updateData">
     <l-marker
         v-for="(event_marker, id) in events"
         :lat-lng="event_marker.coords"
-        @click="showDescription(event_marker.id)"
+        @click="showEventDescription(event_marker.id)"
     >
-      <l-icon :icon-url="markerIconUrl" :icon-size="[100, 100]"></l-icon>
+      <l-icon :icon-url="eventMarkerIconUrl" :icon-size="[120, 120]"></l-icon>
+    </l-marker>
+    <l-marker
+        v-for="(place_marker, id) in places"
+        :lat-lng="place_marker.coords"
+        @click="showPlaceDescription(place_marker.id)"
+    >
+      <l-icon :icon-url="placeMarkerIconUrl" :icon-size="[100, 100]"></l-icon>
     </l-marker>
     <l-tile-layer layer-type="base"
                   name="OpenStreetMap"
@@ -84,11 +133,13 @@
 <script>
 import { LMap, LTileLayer, LMarker, LIcon } from '@vue-leaflet/vue-leaflet';
 import EventMap from "@/components/EventMap";
+import PlaceWindow from "@/components/PlaceWindow";
 import 'leaflet/dist/leaflet.css';
 
 export default {
   name: "IntMap",
-  emits: ['create', 'event_delete', 'event_add_form_close', 'take_a_part', 'un_part', 'save_edit_to_app'],
+  emits: ['event_create', 'event_delete', 'event_add_form_close',
+    'take_a_part', 'un_part', 'save_edit_to_app', 'place_create', 'event_delete', 'place_add_form_close'],
   props: {
     events: {
       type: Array,
@@ -96,23 +147,33 @@ export default {
     },
     event_form_on: {
       type: Boolean
-    }
+    },
+    places: {
+      type: Array,
+      required: true
+    },
+    place_form_on : {
+      type: Boolean
+    },
   },
   components: {
     LMap,
     LTileLayer,
     LMarker,
     EventMap,
+    PlaceWindow,
     LIcon
   },
   data() {
     return {
       showEvent: true,
+      showPlace: true,
       zoom: 11,
       center: [56.4853, 84.9885],
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       attribution: 'Spotlight',
-      markerIconUrl: require("./components_assets/event.png"),
+      eventMarkerIconUrl: require("./components_assets/event.png"),
+      placeMarkerIconUrl: require("./components_assets/place.png"),
       x : 0,
       y : 0,
       markerPosition: [0, 0],
@@ -122,6 +183,7 @@ export default {
       },
       leftPoint : [0, 0],
       selectedEvent: null,
+      selectedPlace: null,
       imageUrl: '',
       new_place: {
         id: '',
@@ -129,9 +191,11 @@ export default {
         description: '',
         coord_x: '',
         coord_y: '',
+        coords: '',
         photo: [],
         address: '',
-        place_type: ''
+        place_type: '',
+        selectedEvent: null,
       },
       new_event: {
         id: '',
@@ -168,6 +232,11 @@ export default {
       this.new_event.coord_x = this.markerPosition[0];
       this.new_event.coord_y = this.markerPosition[1];
       this.new_event.coords = this.markerPosition;
+
+      this.new_place.coord_x = this.markerPosition[0];
+      this.new_place.coord_y = this.markerPosition[1];
+      this.new_place.coords = this.markerPosition;
+
       console.log("Новые координаты маркера: ",this.markerPosition)
     },
     updateData(event) {
@@ -190,46 +259,84 @@ export default {
       this.new_place.photo.push(buff)
     },
     event_add() {
-      this.new_event.id = Date.now();
-      this.$emit('create', this.new_event);
-      this.new_event = {
-        photo: [],
-        title: '',
-        place: '',
-        date: '',
-        time: '',
-        short_detail: '',
-        age_rating: '',
-        event_type: '',
-        event_tags: '',
-        souls_count: '',
-        link: '',
-        selectedEvent : null,
-        coord_x: '',
-        coord_y: '',
-        coords: '',
+      if (this.new_event.coord_x && this.new_event.coord_y) {
+        this.new_event.id = Date.now();
+        this.$emit('event_create', this.new_event);
+        this.new_event = {
+          photo: [],
+          title: '',
+          place: '',
+          date: '',
+          time: '',
+          short_detail: '',
+          age_rating: '',
+          event_type: '',
+          event_tags: '',
+          souls_count: '',
+          link: '',
+          selectedEvent : null,
+          coord_x: '',
+          coord_y: '',
+          coords: '',
+        }
+        this.new_event.photo = '';
+        this.$emit('event_add_form_close');
       }
-      this.new_event.photo = '';
-      this.$emit('event_add_form_close');
+    },
+    place_add() {
+      if (this.new_place.coord_x && this.new_place.coord_y) {
+        this.new_place.id = Date.now();
+        this.$emit('place_create', this.new_place);
+        this.new_place = {
+          name: '',
+          description: '',
+          coord_x: '',
+          coord_y: '',
+          coords: '',
+          photo: [],
+          address: '',
+          place_type: ''
+        }
+        this.new_place.photo = '';
+        this.$emit('place_add_form_close');
+      }
     },
     event_down(id) {
       this.$emit('event_delete', id);
     },
-    showDescription(id) {
+    place_down(id) {
+      this.$emit('place_delete', id);
+    },
+    showEventDescription(id) {
       this.selectedEvent = id;
       this.showEvent = true;
-      this.item(this.selectedEvent);
+      this.event_item(this.selectedEvent);
+    },
+    showPlaceDescription(id) {
+      this.selectedPlace = id;
+      this.showPlace = true;
+      this.place_item(this.selectedPlace);
     },
     eventClose() {
       this.showEvent = false;
     },
-    item(selectedId) {
+    placeClose() {
+      this.showPlace = false;
+    },
+    event_item(selectedId) {
       console.log(selectedId)
       return this.events.find(item => item.id === selectedId);
     },
+    place_item(selectedId) {
+      console.log(selectedId)
+      return this.places.find(item => item.id === selectedId);
+    },
     closeEventAddFormEmit() {
       this.$emit('event_add_form_close');
-    }
+    },
+    closePlaceAddFormEmit() {
+      this.$emit('place_add_form_close');
+    },
   },
   mounted() {
 
@@ -289,19 +396,21 @@ l-marker {
   flex-wrap: nowrap;
 }
 .event-add > section {
-  color: #EADDCA ;
-  text-shadow: #FF5733 1px 0 15px;
+  color: #C4A484; ;
   text-align: center;
   font-size: 20pt;
 }
 .event-add > div > label {
-  color: #EADDCA ;
-  text-shadow: #F88379 1px 0 15px;
+  color: #C4A484;
   padding: 10px;
   width: max-content;
 }
+.event-add > div > p {
+  color: #C4A484;
+  padding: 10px;
+}
 .event-add > div > input {
-  color: #EADDCA ;
+  color: #ffffff;
   background: black;
   border: none;
   border-radius: 5px;
@@ -315,7 +424,7 @@ l-marker {
   text-shadow: #FF5733 1px 0 15px;
   font-size: 14pt;
 }
-.event-add > div > button:hover  {
+.event-add > button:hover  {
   color: #FF69B4;
   text-shadow: #FF10F0 1px 0 20px;
 }
