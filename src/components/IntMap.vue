@@ -56,6 +56,9 @@
              :showEvent="showEvent"
              @event_transfer_to_death="event_down"
              @event_close="eventClose"
+             @event_taking_part="eventTakingPart"
+             @event_un_parting="eventUnParting"
+             @save_edit="saveNewEventData"
   />
   <l-map id="map" ref="map" style="width:97vw;height:600px;"
          :zoom="zoom" :center="center"
@@ -80,7 +83,7 @@ import 'leaflet/dist/leaflet.css';
 
 export default {
   name: "IntMap",
-  emits: ['create', 'event_delete', 'event_add_form_close'],
+  emits: ['create', 'event_delete', 'event_add_form_close', 'take_a_part', 'un_part', 'save_edit_to_app'],
   props: {
     events: {
       type: Array,
@@ -134,6 +137,15 @@ export default {
     };
   },
   methods : {
+    saveNewEventData (edit_event, buff_id) {
+      this.$emit('save_edit_to_app', edit_event, buff_id);
+    },
+    eventTakingPart(id) {
+      this.$emit('take_a_part', id);
+    },
+    eventUnParting(id) {
+      this.$emit('un_part', id);
+    },
     updateMarkerLatLng(event) {
       this.markerPosition = [event.latlng.lat, event.latlng.lng];
       this.new_event.coord_x = this.markerPosition[0];

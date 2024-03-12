@@ -1,6 +1,58 @@
 <template>
   <div class="event-map" ref="eventmap">
     <div class="events" v-for="(event, id) in events">
+
+      <div  class="event-edit" v-if="event.id === selectedEvent && event_edit_form">
+        <div class="close-btn">
+          <button >X</button>
+        </div>
+        <section>Редактировать событие</section>
+        <div>
+          <label for="photo" class="input-file">Загрузить изабражения</label>
+          <input type="file" name="eventPhoto" id="photo" accept="image/png, image/jpeg, image/jpg"
+                 @change="FileUpload" style="display: none;">
+        </div>
+        <div>
+          <label for="title" >Название события</label>
+          <input type="text" name="eventTitle" id="title" v-model="edit_event.title">
+        </div>
+        <div>
+          <label for="place">Место проведения</label>
+          <input type="text" name="eventPlace" id="place" v-model="edit_event.place">
+        </div>
+        <div>
+          <label for="date">Дата проведения</label>
+          <input type="date" name="eventDate" id="date" v-model="edit_event.date">
+        </div>
+        <div>
+          <label for="time">Время проведения</label>
+          <input type="time" name="eventTime" id="time" v-model="edit_event.time">
+        </div>
+        <div>
+          <label for="short_detail">Краткое описание</label>
+          <input type="text" name="eventShortDetail" id="short_detail" v-model="edit_event.short_detail">
+        </div>
+        <div>
+          <label for="age_rating">Возрастное ограничение</label>
+          <input type="text" name="eventAgeRating" id="age_rating" v-model="edit_event.age_rating">
+        </div>
+        <div>
+          <label for="event_type">Тип события</label>
+          <input type="text" name="eventType" id="event_type" v-model="edit_event.event_type">
+        </div>
+        <div>
+          <label for="event_tags">Тэги</label>
+          <input type="text" name="eventTags" id="event_tags" v-model="edit_event.event_tags">
+        </div>
+        <div>
+          <label for="link">Ссылка</label>
+          <input type="text" name="eventLink" id="link" v-model="edit_event.link">
+        </div>
+        <button type="submit" @click="save_event">Сохранить изменения</button>
+        <button type="submit" @click="cancel_event">Отменить изменения</button>
+      </div>
+
+
       <div class="event-item"  v-if="event.id === selectedEvent">
         <div class="close-btn">
           <button @click="closeEventEmit">X</button>
@@ -18,18 +70,20 @@
         <div class="first">Тэги: <p class="second">{{event.event_tags}}</p></div>
         <div class="first">Количество участвующих: <p class="second">{{event.souls_count}}</p></div>
         <p class="link-content">Ссылка: <a href="{{event.link}}">{{event.link}}</a> </p>
-        <button>Участвовать</button>
-        <button>Редактировать событие</button>
+        <button @click="eventTakePart(id)">Участвовать</button>
+        <button @click="eventUnPart(id)">Перестать участвовать</button>
+        <button @click="startEventEdit(id)">Редактировать событие</button>
         <button @click="eventDelete(id)">Удалить событие</button>
       </div>
     </div>
+
   </div>
 </template>
 
 <script>
 export default {
   name: "EventMap",
-  emits: ['event_transfer_to_death', 'event_close'],
+  emits: ['event_transfer_to_death', 'event_close', 'event_taking_part', 'event_un_parting', 'save_edit'],
   props: {
     events: {
       type: Array,
@@ -39,13 +93,69 @@ export default {
 
     },
   },
+  data() {
+    return {
+      edit_event: {
+        photo: [],
+        title: '',
+        id: '',
+        place: '',
+        date: '',
+        time: '',
+        short_detail: '',
+        age_rating: '',
+        event_type: '',
+        event_tags: '',
+        link: '',
+        coord_x: '',
+        coord_y: '',
+        coords: '',
+      },
+      event_edit_form: false,
+      buffId: '',
+    }
+  },
   methods: {
+    eventTakePart(id) {
+      this.$emit('event_taking_part', id);
+    },
+    eventUnPart(id) {
+      this.$emit('event_un_parting', id);
+    },
     eventDelete(id) {
       this.$emit('event_transfer_to_death', id);
     },
     closeEventEmit() {
       this.$emit('event_close');
     },
+    FileUpload(event) {
+      const file = event.target.files[0];
+      let buff = URL.createObjectURL(file);
+      this.edit_event.photo.push(buff)
+    },
+    startEventEdit(id) {
+      this.event_edit_form = !this.event_edit_form;
+      this.buffId = id;
+
+      this.edit_event.id = this.events[id].id;
+      this.edit_event.photo = this.events[id].photo;
+      this.edit_event.title = this.events[id].title;
+      this.edit_event.place = this.events[id].place;
+      this.edit_event.date = this.events[id].date;
+      this.edit_event.time = this.events[id].time;
+      this.edit_event.short_detail = this.events[id].short_detail;
+      this.edit_event.age_rating = this.events[id].age_rating;
+      this.edit_event.event_type = this.events[id].event_type;
+      this.edit_event.event_tags = this.events[id].event_tags;
+      this.edit_event.link = this.events[id].link;
+      this.edit_event.coord_x = this.events[id].coord_x;
+      this.edit_event.coord_y = this.events[id].coord_y;
+      this.edit_event.coords = this.events[id].coords;
+    },
+    save_event() {
+      this.$emit('save_edit', this.edit_event, this.buffId);
+      this.event_edit_form = !this.event_edit_form;
+    }
   },
 }
 </script>

@@ -8,6 +8,9 @@
              @create="create_event"
              @event_delete="event_teleport_to_death"
              @event_add_form_close="eventFormClose"
+             @take_a_part="takePart"
+             @un_part="unPart"
+             @save_edit_to_app="saveEvent"
     />
   </div>
   <custom-footer/>
@@ -32,6 +35,23 @@
       }
     },
     methods: {
+      saveEvent(edit_event, buff_id) {
+      this.events[buff_id] = edit_event;
+      this.save();
+      },
+      takePart(id) {
+        this.events[id].souls_count +=1;
+        this.save();
+      },
+      unPart(id) {
+        if (this.events[id].souls_count === 0) {
+          console.log('You already not part of event');
+        }
+        else {
+          this.events[id].souls_count -=1;
+        }
+        this.save();
+      },
       eventFormShow() {
         this.top_bar_on = false;
         this.event_form_on = true;
