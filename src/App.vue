@@ -30,6 +30,8 @@
     data () {
       return {
         events: [],
+        places: [],
+        organizations: [],
         top_bar_on: true,
         event_form_on : false,
       }

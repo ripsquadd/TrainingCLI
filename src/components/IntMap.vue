@@ -5,9 +5,9 @@
     </div>
     <section>Новое событие</section>
     <div>
-      <label for="photo" class="input-file">Загрузить изабражения</label>
+      <label for="photo" class="input-file">Загрузить изображения</label>
       <input type="file" name="eventPhoto" id="photo" accept="image/png, image/jpeg, image/jpg"
-             @change="FileUpload" style="display: none;">
+             @change="FileUploadEvent" style="display: none;">
     </div>
     <div>
       <label for="title" >Название события</label>
@@ -51,6 +51,9 @@
     </div>
     <button type="submit" @click="event_add">Добавить событие</button>
   </div>
+
+
+
   <event-map :events="events" v-if="showEvent"
              :selectedEvent="selectedEvent"
              :showEvent="showEvent"
@@ -67,7 +70,9 @@
         v-for="(event_marker, id) in events"
         :lat-lng="event_marker.coords"
         @click="showDescription(event_marker.id)"
-    ></l-marker>
+    >
+      <l-icon :icon-url="markerIconUrl" :icon-size="[100, 100]"></l-icon>
+    </l-marker>
     <l-tile-layer layer-type="base"
                   name="OpenStreetMap"
                   :url="url"
@@ -77,7 +82,7 @@
 </template>
 
 <script>
-import { LMap, LTileLayer, LMarker } from '@vue-leaflet/vue-leaflet';
+import { LMap, LTileLayer, LMarker, LIcon } from '@vue-leaflet/vue-leaflet';
 import EventMap from "@/components/EventMap";
 import 'leaflet/dist/leaflet.css';
 
@@ -97,7 +102,8 @@ export default {
     LMap,
     LTileLayer,
     LMarker,
-    EventMap
+    EventMap,
+    LIcon
   },
   data() {
     return {
@@ -106,6 +112,7 @@ export default {
       center: [56.4853, 84.9885],
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       attribution: 'Spotlight',
+      markerIconUrl: require("./components_assets/event.png"),
       x : 0,
       y : 0,
       markerPosition: [0, 0],
@@ -116,6 +123,16 @@ export default {
       leftPoint : [0, 0],
       selectedEvent: null,
       imageUrl: '',
+      new_place: {
+        id: '',
+        name: '',
+        description: '',
+        coord_x: '',
+        coord_y: '',
+        photo: [],
+        address: '',
+        place_type: ''
+      },
       new_event: {
         id: '',
         photo: [],
@@ -162,10 +179,15 @@ export default {
       this.viewPoint.viewPointWidth = document.getElementById('map').clientWidth;
       console.log("Новые данные о Вьюпинте: ",this.viewPoint);
     },
-    FileUpload(event) {
+    FileUploadEvent(event) {
       const file = event.target.files[0];
       let buff = URL.createObjectURL(file);
       this.new_event.photo.push(buff)
+    },
+    FileUploadPlace(event) {
+      const file = event.target.files[0];
+      let buff = URL.createObjectURL(file);
+      this.new_place.photo.push(buff)
     },
     event_add() {
       this.new_event.id = Date.now();

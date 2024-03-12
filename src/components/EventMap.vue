@@ -2,9 +2,9 @@
   <div class="event-map" ref="eventmap">
     <div class="events" v-for="(event, id) in events">
 
-      <div  class="event-edit" v-if="event.id === selectedEvent && event_edit_form">
+      <div  class="event-edit" v-if="event.id === selectedEvent && event_edit_form === true">
         <div class="close-btn">
-          <button >X</button>
+          <button @click="cancel_event">X</button>
         </div>
         <section>Редактировать событие</section>
         <div>
@@ -53,7 +53,7 @@
       </div>
 
 
-      <div class="event-item"  v-if="event.id === selectedEvent">
+      <div class="event-item"  v-if="event.id === selectedEvent && event_edit_form === false">
         <div class="close-btn">
           <button @click="closeEventEmit">X</button>
         </div>
@@ -132,6 +132,25 @@ export default {
       const file = event.target.files[0];
       let buff = URL.createObjectURL(file);
       this.edit_event.photo.push(buff)
+    },
+    cancel_event() {
+      this.event_edit_form = !this.event_edit_form;
+      this.buffId = '';
+
+      this.edit_event.id = '';
+      this.edit_event.photo = '';
+      this.edit_event.title = '';
+      this.edit_event.place = '';
+      this.edit_event.date = '';
+      this.edit_event.time = '';
+      this.edit_event.short_detail = '';
+      this.edit_event.age_rating = '';
+      this.edit_event.event_type = '';
+      this.edit_event.event_tags = '';
+      this.edit_event.link = '';
+      this.edit_event.coord_x = '';
+      this.edit_event.coord_y = '';
+      this.edit_event.coords = '';
     },
     startEventEdit(id) {
       this.event_edit_form = !this.event_edit_form;
@@ -252,5 +271,48 @@ export default {
   }
   .link-content {
     color: #C4A484;
+  }
+  .event-edit {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    border-radius: 5px;
+    margin: 0;
+    width: 400px;
+    padding: 10px;
+    background: #1B1212;
+    font-size: 12pt;
+  }
+  .event-edit > button {
+    margin: 5px;
+    border: none;
+    background: #1B1212;
+    color: #FFA500 ;
+    text-shadow: #FF5733 1px 0 15px;
+    font-size: 14pt;
+  }
+  .event-edit > button:hover {
+    color: #FF69B4;
+    text-shadow: #FF10F0 1px 0 20px;
+  }
+  .event-edit > section {
+    color: #EADDCA ;
+    text-align: center;
+    font-size: 20pt;
+    margin-bottom: 10px;
+  }
+  .event-edit > div > label {
+    color: #C4A484 ;
+    padding: 10px;
+    width: max-content;
+  }
+  .event-edit > div > input {
+    color: #EADDCA ;
+    background: black;
+    border: none;
+    border-radius: 5px;
+    height: 20px;
   }
 </style>
