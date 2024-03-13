@@ -2,10 +2,38 @@
   <div class="event-map" ref="eventmap">
     <div class="events" v-for="(place, id) in places">
 
+      <div  class="event-edit" v-if="place.id === selectedPlace && place_edit_form === true">
+        <div class="close-btn">
+          <button @click="cancel_place">X</button>
+        </div>
+        <section>Редактировать место</section>
+        <div>
+          <label for="photo" class="input-file">Загрузить изображения</label>
+          <input type="file" name="eventPhoto" id="photo" accept="image/png, image/jpeg, image/jpg"
+                 @change="FileUploadEditPlace" style="display: none;">
+        </div>
+        <div>
+          <label for="title" >Название места</label>
+          <input type="text" name="eventTitle" id="title" v-model="edit_place.name">
+        </div>
+        <div>
+          <label for="place">Описание места</label>
+          <input type="text" name="eventPlace" id="place" v-model="edit_place.description">
+        </div>
+        <div>
+          <label for="placeAddress">Адрес</label>
+          <input type="text" name="placeAddress" id="place_address" v-model="edit_place.address">
+        </div>
+        <div>
+          <label for="placeType">Тип места</label>
+          <input type="text" name="placeType" id="place_type" v-model="edit_place.place_type">
+        </div>
+        <button type="submit" @click="save_place">Сохранить изменения</button>
+        <button type="submit" @click="cancel_place">Отменить изменения</button>
+      </div>
 
 
-
-      <div class="event-item"  v-if="place.id === selectedPlace">
+      <div class="event-item"  v-if="place.id === selectedPlace && place_edit_form === false">
         <div class="close-btn">
           <button @click="closePlaceEmit">X</button>
         </div>
@@ -13,10 +41,10 @@
           <img :src="place.photo">
         </div>
         <p class="event-title">{{place.name}}</p>
-        <div class="first">Место проведения: <p class="second">{{place.description}}</p></div>
-        <div class="first">Дата проведения: <p class="second">{{place.address}}</p></div>
-        <div class="first">Время проведения: <p class="second">{{place.place_type}}</p></div>
-        <button @click="startplaceEdit(id)">Редактировать место</button>
+        <div class="first">Описание: <p class="second">{{place.description}}</p></div>
+        <div class="first">Адрес: <p class="second">{{place.address}}</p></div>
+        <div class="first">Тип места: <p class="second">{{place.place_type}}</p></div>
+        <button @click="startPlaceEdit(id)">Редактировать место</button>
         <button @click="placeDelete(id)">Удалить место</button>
       </div>
     </div>
@@ -40,13 +68,13 @@ export default {
   data() {
     return {
       edit_place: {
+        photo: '',
         id: '',
         name: '',
         description: '',
         coord_x: '',
         coord_y: '',
         coords: '',
-        photo: [],
         address: '',
         place_type: '',
       },
@@ -55,16 +83,15 @@ export default {
     }
   },
   methods: {
+    FileUploadEditPlace(event) {
+      const file = event.target.files[0];
+      this.edit_place.photo = URL.createObjectURL(file);
+    },
     placeDelete(id) {
       this.$emit('place_transfer_to_death', id);
     },
     closePlaceEmit() {
       this.$emit('place_close');
-    },
-    FileUpload(event) {
-      const file = event.target.files[0];
-      let buff = URL.createObjectURL(file);
-      this.edit_place.photo.push(buff)
     },
     cancel_place() {
       this.place_edit_form = !this.place_edit_form;

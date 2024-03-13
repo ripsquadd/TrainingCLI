@@ -102,7 +102,7 @@
              :showPlace="showPlace"
              @place_transfer_to_death="place_down"
              @place_close="placeClose"
-             @save_place_edit="saveNewPlacetData"
+             @save_place_edit="saveNewPlaceData"
   />
 
   <l-map id="map" ref="map" style="width:97vw;height:600px;"
@@ -139,7 +139,9 @@ import 'leaflet/dist/leaflet.css';
 export default {
   name: "IntMap",
   emits: ['event_create', 'event_delete', 'event_add_form_close',
-    'take_a_part', 'un_part', 'save_edit_to_app', 'place_create', 'event_delete', 'place_add_form_close'],
+    'take_a_part', 'un_part', 'save_edit_to_app', 'place_create',
+    'event_delete', 'place_add_form_close', 'save_place_to_app',
+    'place_delete'],
   props: {
     events: {
       type: Array,
@@ -153,6 +155,13 @@ export default {
       required: true
     },
     place_form_on : {
+      type: Boolean
+    },
+    organizations: {
+      type: Array,
+      required: true
+    },
+    organization_form_on : {
       type: Boolean
     },
   },
@@ -174,6 +183,7 @@ export default {
       attribution: 'Spotlight',
       eventMarkerIconUrl: require("./components_assets/event.png"),
       placeMarkerIconUrl: require("./components_assets/place.png"),
+      organizationMarkerIconUrl: require("./components_assets/organization.png"),
       x : 0,
       y : 0,
       markerPosition: [0, 0],
@@ -192,14 +202,14 @@ export default {
         coord_x: '',
         coord_y: '',
         coords: '',
-        photo: [],
+        photo: '',
         address: '',
         place_type: '',
         selectedEvent: null,
       },
       new_event: {
         id: '',
-        photo: [],
+        photo: '',
         title: '',
         place: '',
         date: '',
@@ -220,6 +230,9 @@ export default {
   methods : {
     saveNewEventData (edit_event, buff_id) {
       this.$emit('save_edit_to_app', edit_event, buff_id);
+    },
+    saveNewPlaceData (edit_place, buff_id) {
+      this.$emit('save_place_to_app', edit_place, buff_id);
     },
     eventTakingPart(id) {
       this.$emit('take_a_part', id);
@@ -250,20 +263,18 @@ export default {
     },
     FileUploadEvent(event) {
       const file = event.target.files[0];
-      let buff = URL.createObjectURL(file);
-      this.new_event.photo.push(buff)
+      this.new_event.photo = URL.createObjectURL(file);
     },
     FileUploadPlace(event) {
       const file = event.target.files[0];
-      let buff = URL.createObjectURL(file);
-      this.new_place.photo.push(buff)
+      this.new_place.photo = URL.createObjectURL(file);
     },
     event_add() {
       if (this.new_event.coord_x && this.new_event.coord_y) {
         this.new_event.id = Date.now();
         this.$emit('event_create', this.new_event);
         this.new_event = {
-          photo: [],
+          photo: '',
           title: '',
           place: '',
           date: '',
@@ -294,6 +305,7 @@ export default {
           coord_y: '',
           coords: '',
           photo: [],
+          selectedPlace : null,
           address: '',
           place_type: ''
         }
@@ -308,11 +320,13 @@ export default {
       this.$emit('place_delete', id);
     },
     showEventDescription(id) {
+      this.showPlace = false;
       this.selectedEvent = id;
       this.showEvent = true;
       this.event_item(this.selectedEvent);
     },
     showPlaceDescription(id) {
+      this.showEvent = false;
       this.selectedPlace = id;
       this.showPlace = true;
       this.place_item(this.selectedPlace);

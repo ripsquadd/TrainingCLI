@@ -14,6 +14,7 @@
              @event_create="create_event"
              @event_delete="event_teleport_to_death"
              @save_edit_to_app="saveEvent"
+             @save_place_to_app="savePlace"
              @event_add_form_close="eventFormClose"
              @take_a_part="takePart"
              @un_part="unPart"
@@ -50,8 +51,12 @@
     },
     methods: {
       saveEvent(edit_event, buff_id) {
-      this.events[buff_id] = edit_event;
-      this.save();
+        this.events[buff_id] = edit_event;
+        this.save();
+      },
+      savePlace(edit_place, buff_id) {
+        this.places[buff_id] = edit_place;
+        this.save();
       },
       takePart(id) {
         this.events[id].souls_count +=1;

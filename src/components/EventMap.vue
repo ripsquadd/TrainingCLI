@@ -10,7 +10,7 @@
         <div>
           <label for="photo" class="input-file">Загрузить изабражения</label>
           <input type="file" name="eventPhoto" id="photo" accept="image/png, image/jpeg, image/jpg"
-                 @change="FileUpload" style="display: none;">
+                 @change="FileUploadEditEvent" style="display: none;">
         </div>
         <div>
           <label for="title" >Название события</label>
@@ -96,7 +96,7 @@ export default {
   data() {
     return {
       edit_event: {
-        photo: [],
+        photo: '',
         title: '',
         id: '',
         place: '',
@@ -128,10 +128,9 @@ export default {
     closeEventEmit() {
       this.$emit('event_close');
     },
-    FileUpload(event) {
+    FileUploadEditEvent(event) {
       const file = event.target.files[0];
-      let buff = URL.createObjectURL(file);
-      this.edit_event.photo.push(buff)
+      this.edit_event.photo = URL.createObjectURL(file);
     },
     cancel_event() {
       this.event_edit_form = !this.event_edit_form;
