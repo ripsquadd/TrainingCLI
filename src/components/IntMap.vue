@@ -87,6 +87,34 @@
     <button type="submit" @click="place_add">Добавить место</button>
   </div>
 
+  <div  class="event-add" v-if="organization_form_on">
+    <div class="close-btn">
+      <button @click="closeOrganizationAddFormEmit">X</button>
+    </div>
+    <section>Новая организация</section>
+    <div>
+      <p>Нажмите на карту чтобы выбрать координаты организации</p>
+    </div>
+    <div>
+      <label for="photo" class="input-file">Загрузить изображения</label>
+      <input type="file" name="eventPhoto" id="photo" accept="image/png, image/jpeg, image/jpg"
+             @change="FileUploadOrganization" style="display: none;">
+    </div>
+    <div>
+      <label for="title" >Название организации</label>
+      <input type="text" name="eventTitle" id="title" v-model="new_organization.name">
+    </div>
+    <div>
+      <label for="place">Описание организации</label>
+      <input type="text" name="eventPlace" id="place" v-model="new_organization.description">
+    </div>
+    <div>
+      <label for="placeAddress">Адрес</label>
+      <input type="text" name="placeAddress" id="place_address" v-model="new_organization.address">
+    </div>
+    <button type="submit" @click="organization_add">Добавить организацию</button>
+  </div>
+
   <event-map :events="events" v-if="showEvent"
              :selectedEvent="selectedEvent"
              :showEvent="showEvent"
@@ -97,12 +125,22 @@
              @save_event_edit="saveNewEventData"
   />
 
-  <place-window :places="places" v-if="showPlace"
-             :selectedPlace="selectedPlace"
-             :showPlace="showPlace"
-             @place_transfer_to_death="place_down"
-             @place_close="placeClose"
-             @save_place_edit="saveNewPlaceData"
+  <place-window
+      :places="places" v-if="showPlace"
+      :selectedPlace="selectedPlace"
+      :showPlace="showPlace"
+      @place_transfer_to_death="place_down"
+      @place_close="placeClose"
+      @save_place_edit="saveNewPlaceData"
+  />
+
+  <organization-window
+      :organizations="organizations" v-if="showOrganization"
+      :selectedOrganization="selectedOrganization"
+      :showOrganization="showOrganization"
+      @organization_transfer_to_death="organization_down"
+      @organization_close="organizationClose"
+      @save_organization_edit="saveNewOrganizationData"
   />
 
   <l-map id="map" ref="map" style="width:97vw;height:600px;"
@@ -122,6 +160,13 @@
     >
       <l-icon :icon-url="placeMarkerIconUrl" :icon-size="[100, 100]"></l-icon>
     </l-marker>
+    <l-marker
+        v-for="(organization_marker, id) in organizations"
+        :lat-lng="organization_marker.coords"
+        @click="showOrganizationDescription(organization_marker.id)"
+    >
+      <l-icon :icon-url="organizationMarkerIconUrl" :icon-size="[100, 100]"></l-icon>
+    </l-marker>
     <l-tile-layer layer-type="base"
                   name="OpenStreetMap"
                   :url="url"
@@ -134,6 +179,7 @@
 import { LMap, LTileLayer, LMarker, LIcon } from '@vue-leaflet/vue-leaflet';
 import EventMap from "@/components/EventMap";
 import PlaceWindow from "@/components/PlaceWindow";
+import OrganizationWindow from "@/components/OrganizationWindow";
 import 'leaflet/dist/leaflet.css';
 
 export default {
@@ -141,7 +187,9 @@ export default {
   emits: ['event_create', 'event_delete', 'event_add_form_close',
     'take_a_part', 'un_part', 'save_edit_to_app', 'place_create',
     'event_delete', 'place_add_form_close', 'save_place_to_app',
-    'place_delete'],
+    'place_delete', 'save_organization_to_app', 'organization_delete',
+    'place_add_form_close',
+  ],
   props: {
     events: {
       type: Array,
@@ -171,12 +219,14 @@ export default {
     LMarker,
     EventMap,
     PlaceWindow,
+    OrganizationWindow,
     LIcon
   },
   data() {
     return {
       showEvent: true,
       showPlace: true,
+      showOrganization: true,
       zoom: 11,
       center: [56.4853, 84.9885],
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -205,7 +255,18 @@ export default {
         photo: '',
         address: '',
         place_type: '',
-        selectedEvent: null,
+        selectedPlace: null,
+      },
+      new_organization: {
+        id: '',
+        name: '',
+        description: '',
+        coord_x: '',
+        coord_y: '',
+        coords: '',
+        photo: '',
+        address: '',
+        selectedOrganization: null,
       },
       new_event: {
         id: '',
@@ -234,6 +295,9 @@ export default {
     saveNewPlaceData (edit_place, buff_id) {
       this.$emit('save_place_to_app', edit_place, buff_id);
     },
+    saveNewOrganizationData (edit_place, buff_id) {
+      this.$emit('save_organization_to_app', edit_place, buff_id);
+    },
     eventTakingPart(id) {
       this.$emit('take_a_part', id);
     },
@@ -249,6 +313,10 @@ export default {
       this.new_place.coord_x = this.markerPosition[0];
       this.new_place.coord_y = this.markerPosition[1];
       this.new_place.coords = this.markerPosition;
+
+      this.new_organization.coord_x = this.markerPosition[0];
+      this.new_organization.coord_y = this.markerPosition[1];
+      this.new_organization.coords = this.markerPosition;
 
       console.log("Новые координаты маркера: ",this.markerPosition)
     },
@@ -268,6 +336,10 @@ export default {
     FileUploadPlace(event) {
       const file = event.target.files[0];
       this.new_place.photo = URL.createObjectURL(file);
+    },
+    FileUploadOrganization(event) {
+      const file = event.target.files[0];
+      this.new_organization.photo = URL.createObjectURL(file);
     },
     event_add() {
       if (this.new_event.coord_x && this.new_event.coord_y) {
@@ -313,22 +385,52 @@ export default {
         this.$emit('place_add_form_close');
       }
     },
+    organization_add() {
+      if (this.new_organization.coord_x && this.new_organization.coord_y) {
+        this.new_organization.id = Date.now();
+        this.$emit('organization_create', this.new_organization);
+        this.new_organization = {
+          name: '',
+          description: '',
+          coord_x: '',
+          coord_y: '',
+          coords: '',
+          photo: '',
+          selectedOrganization : null,
+          address: '',
+        }
+        this.new_organization.photo = '';
+        this.$emit('organization_add_form_close');
+      }
+    },
     event_down(id) {
       this.$emit('event_delete', id);
     },
     place_down(id) {
       this.$emit('place_delete', id);
     },
+    organization_down(id) {
+      this.$emit('organization_delete', id);
+    },
     showEventDescription(id) {
       this.showPlace = false;
+      this.showOrganization = false;
       this.selectedEvent = id;
       this.showEvent = true;
       this.event_item(this.selectedEvent);
     },
     showPlaceDescription(id) {
       this.showEvent = false;
+      this.showOrganization = false;
       this.selectedPlace = id;
       this.showPlace = true;
+      this.place_item(this.selectedPlace);
+    },
+    showOrganizationDescription(id) {
+      this.showEvent = false;
+      this.showPlace = false;
+      this.selectedOrganization = id;
+      this.showOrganization = true;
       this.place_item(this.selectedPlace);
     },
     eventClose() {
@@ -337,18 +439,25 @@ export default {
     placeClose() {
       this.showPlace = false;
     },
+    organizationClose() {
+      this.showOrganization = false;
+    },
     event_item(selectedId) {
-      console.log(selectedId)
       return this.events.find(item => item.id === selectedId);
     },
     place_item(selectedId) {
-      console.log(selectedId)
       return this.places.find(item => item.id === selectedId);
+    },
+    organization_item(selectedId) {
+      return this.organizations.find(item => item.id === selectedId);
     },
     closeEventAddFormEmit() {
       this.$emit('event_add_form_close');
     },
     closePlaceAddFormEmit() {
+      this.$emit('place_add_form_close');
+    },
+    closeOrganizationAddFormEmit() {
       this.$emit('place_add_form_close');
     },
   },

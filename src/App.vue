@@ -12,15 +12,19 @@
              :place_form_on="place_form_on"
              :organization_form_on="organization_form_on"
              @event_create="create_event"
+             @place_create="create_place"
+             @organization_create="create_organization"
              @event_delete="event_teleport_to_death"
+             @place_delete="place_teleport_to_death"
+             @organization_delete="organization_teleport_to_death"
              @save_edit_to_app="saveEvent"
              @save_place_to_app="savePlace"
+             @save_organization_to_app="saveOrganization"
              @event_add_form_close="eventFormClose"
+             @place_add_form_close="placeFormClose"
+             @organization_add_form_close="organizationFormClose"
              @take_a_part="takePart"
              @un_part="unPart"
-             @place_create="create_place"
-             @place_delete="place_teleport_to_death"
-             @place_add_form_close="placeFormClose"
     />
   </div>
   <custom-footer/>
@@ -33,10 +37,11 @@
   import TopBar from "@/components/TopBar";
   import CustomFooter from "@/components/CustomFooter";
   import PlaceWindow from "@/components/PlaceWindow";
+  import OrganizationWindow from "@/components/OrganizationWindow";
   export default {
     name: "App",
     components: {
-      TopBar, EventAdd, EventMap, IntMap, CustomFooter, PlaceWindow
+      TopBar, EventAdd, EventMap, IntMap, CustomFooter, PlaceWindow, OrganizationWindow
     },
     data () {
       return {
@@ -56,6 +61,10 @@
       },
       savePlace(edit_place, buff_id) {
         this.places[buff_id] = edit_place;
+        this.save();
+      },
+      saveOrganization(edit_organization, buff_id) {
+        this.organizations[buff_id] = edit_organization;
         this.save();
       },
       takePart(id) {
@@ -114,6 +123,10 @@
       },
       place_teleport_to_death(id) {
         this.places.splice(id, 1);
+        this.save();
+      },
+      organization_teleport_to_death(id) {
+        this.organizations.splice(id, 1);
         this.save();
       },
       save() {
