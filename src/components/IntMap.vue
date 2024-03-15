@@ -146,21 +146,21 @@
   <l-map id="map" ref="map" style="width:97vw;height:600px;"
          :zoom="zoom" :center="center"
          @click="updateMarkerLatLng" @moveend="updateData">
-    <l-marker
+    <l-marker v-if="sort_events"
         v-for="(event_marker, id) in events"
         :lat-lng="event_marker.coords"
         @click="showEventDescription(event_marker.id)"
     >
       <l-icon :icon-url="eventMarkerIconUrl" :icon-size="[120, 120]"></l-icon>
     </l-marker>
-    <l-marker
+    <l-marker v-if="sort_places"
         v-for="(place_marker, id) in places"
         :lat-lng="place_marker.coords"
         @click="showPlaceDescription(place_marker.id)"
     >
       <l-icon :icon-url="placeMarkerIconUrl" :icon-size="[100, 100]"></l-icon>
     </l-marker>
-    <l-marker
+    <l-marker v-if="sort_organizations"
         v-for="(organization_marker, id) in organizations"
         :lat-lng="organization_marker.coords"
         @click="showOrganizationDescription(organization_marker.id)"
@@ -186,9 +186,9 @@ export default {
   name: "IntMap",
   emits: ['event_create', 'event_delete', 'event_add_form_close',
     'take_a_part', 'un_part', 'save_edit_to_app', 'place_create',
-    'event_delete', 'place_add_form_close', 'save_place_to_app',
-    'place_delete', 'save_organization_to_app', 'organization_delete',
-    'place_add_form_close',
+    'place_delete', 'place_add_form_close', 'save_place_to_app',
+    'save_organization_to_app', 'organization_delete', 'organization_add_form_close',
+    'organization_create'
   ],
   props: {
     events: {
@@ -211,6 +211,18 @@ export default {
     },
     organization_form_on : {
       type: Boolean
+    },
+    sort_events : {
+      type: Boolean
+    },
+    sort_places : {
+      type: Boolean
+    },
+    sort_organizations : {
+      type: Boolean
+    },
+    searchTerm : {
+      type: String
     },
   },
   components: {
@@ -244,6 +256,7 @@ export default {
       leftPoint : [0, 0],
       selectedEvent: null,
       selectedPlace: null,
+      selectedOrganization: null,
       imageUrl: '',
       new_place: {
         id: '',
@@ -279,13 +292,16 @@ export default {
         age_rating: '',
         event_type: '',
         event_tags: '',
-        souls_count: '',
+        souls_count: 0,
         link: '',
         selectedEvent: null,
         coord_x: '',
         coord_y: '',
         coords: '',
       },
+      searchResultsArray1: [],
+      searchResultsArray2: [],
+      searchResultsArray3: [],
     };
   },
   methods : {
@@ -355,7 +371,7 @@ export default {
           age_rating: '',
           event_type: '',
           event_tags: '',
-          souls_count: '',
+          souls_count: 0,
           link: '',
           selectedEvent : null,
           coord_x: '',
@@ -431,7 +447,7 @@ export default {
       this.showPlace = false;
       this.selectedOrganization = id;
       this.showOrganization = true;
-      this.place_item(this.selectedPlace);
+      this.organization_item(this.selectedOrganization);
     },
     eventClose() {
       this.showEvent = false;
@@ -458,8 +474,14 @@ export default {
       this.$emit('place_add_form_close');
     },
     closeOrganizationAddFormEmit() {
-      this.$emit('place_add_form_close');
+      this.$emit('organization_add_form_close');
     },
+    // searchObjects() {
+    //   this.searchResultsArray1 = this.events.filter(obj => obj.title.toLowerCase().includes(this.searchTerm.toLowerCase()));
+    //   this.searchResultsArray2 = this.places.filter(obj => obj.name.toLowerCase().includes(this.searchTerm.toLowerCase()));
+    //   this.searchResultsArray3 = this.organizations.filter(obj => obj.name.toLowerCase().includes(this.searchTerm.toLowerCase()));
+    //   console.log(1)
+    // }
   },
   mounted() {
 

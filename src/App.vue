@@ -3,6 +3,11 @@
       @event_add_form_show="eventFormShow"
       @place_add_form_show="placeFormShow"
       @organization_add_form_show="organizationFormShow"
+      @toggle_all="allShow"
+      @toggle_events="eventsShow"
+      @toggle_places="placesShow"
+      @toggle_organizations="organizationsShow"
+      @send_search_query="searchTermUpdate"
   />
   <div class="content">
     <int-map :events="events"
@@ -11,6 +16,10 @@
              :event_form_on="event_form_on"
              :place_form_on="place_form_on"
              :organization_form_on="organization_form_on"
+             :sort_events="sort_events"
+             :sort_places="sort_places"
+             :sort_organizations="sort_organizations"
+             :searchTerm="searchTerm"
              @event_create="create_event"
              @place_create="create_place"
              @organization_create="create_organization"
@@ -52,6 +61,10 @@
         event_form_on: false,
         place_form_on: false,
         organization_form_on: false,
+        sort_events: true,
+        sort_places: true,
+        sort_organizations: true,
+        searchTerm: '',
       }
     },
     methods: {
@@ -104,6 +117,26 @@
         this.top_bar_on = true;
         this.organization_form_on = false;
       },
+      allShow() {
+        this.sort_events = true;
+        this.sort_places = true;
+        this.sort_organizations = true;
+      },
+      eventsShow() {
+        this.sort_events = true;
+        this.sort_places = false;
+        this.sort_organizations = false;
+      },
+      placesShow() {
+        this.sort_events = false;
+        this.sort_places = true;
+        this.sort_organizations = false;
+      },
+      organizationsShow() {
+        this.sort_events = false;
+        this.sort_places = false;
+        this.sort_organizations = true;
+      },
       create_event(new_event) {
         this.events.push(new_event)
         this.save();
@@ -129,6 +162,9 @@
         this.organizations.splice(id, 1);
         this.save();
       },
+      // searchTermUpdate(searchQuery) {
+      //   this.searchTerm = searchQuery;
+      // },
       save() {
         localStorage.events = JSON.stringify(this.events);
         localStorage.places = JSON.stringify(this.places);

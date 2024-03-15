@@ -19,15 +19,15 @@
       <div>
         <button @click="toggleSortMenu">Показать</button>
         <ul v-if="showSortMenu">
-          <li><button>Всё</button></li>
-          <li><button>Событие</button></li>
-          <li><button>Место</button></li>
-          <li><button>Организацию</button></li>
+          <li><button @click="showAllEmit">Всё</button></li>
+          <li><button @click="showEventsEmit">Событие</button></li>
+          <li><button @click="showPlacesEmit">Место</button></li>
+          <li><button @click="showOrganizationsEmit">Организацию</button></li>
         </ul>
       </div>
-      <div>
-        <button>Авторизация</button>
-      </div>
+<!--      <div>-->
+<!--        <input type="text" v-model="searchQuery" placeholder="Введите запрос" @change="queryUpdate">-->
+<!--      </div>-->
     </nav>
   </div>
 </template>
@@ -35,7 +35,9 @@
 <script>
 export default {
   name: "TopBar",
-  emits: ['event_add_form_show', 'place_add_form_show', 'organization_add_form_show'],
+  emits: ['event_add_form_show', 'place_add_form_show', 'organization_add_form_show',
+    'toggle_all', 'toggle_events', 'toggle_places', 'toggle_organizations', 'send_search_query'
+  ],
   data() {
     return {
       originalImageSrc: require("./components_assets/logo.png"),
@@ -43,6 +45,7 @@ export default {
       imageSrc: require("./components_assets/logo.png"),
       showCreateMenu: false,
       showSortMenu: false,
+      searchQuery: '',
     };
   },
   methods: {
@@ -71,7 +74,22 @@ export default {
     showOrganizationAddFormEmit() {
       this.showCreateMenu = !this.showCreateMenu;
       this.$emit('organization_add_form_show');
-    }
+    },
+    showAllEmit () {
+      this.$emit('toggle_all');
+    },
+    showEventsEmit () {
+      this.$emit('toggle_events');
+    },
+    showPlacesEmit () {
+      this.$emit('toggle_places');
+    },
+    showOrganizationsEmit () {
+      this.$emit('toggle_organizations');
+    },
+    // queryUpdate(){
+    //   this.$emit('send_search_query', this.searchQuery);
+    // }
   }
 }
 </script>
