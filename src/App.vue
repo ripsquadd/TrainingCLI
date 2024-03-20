@@ -20,6 +20,10 @@
              :sort_places="sort_places"
              :sort_organizations="sort_organizations"
              :searchTerm="searchTerm"
+             :searchResultsOn="searchResultsOn"
+             :searchResultsEvents="searchResultsEvents"
+             :searchResultsPlaces="searchResultsPlaces"
+             :searchResultsOrganizations="searchResultsOrganizations"
              @event_create="create_event"
              @place_create="create_place"
              @organization_create="create_organization"
@@ -65,6 +69,10 @@
         sort_places: true,
         sort_organizations: true,
         searchTerm: '',
+        searchResultsOn: false,
+        searchResultsEvents: [],
+        searchResultsPlaces: [],
+        searchResultsOrganizations: [],
       }
     },
     methods: {
@@ -162,9 +170,23 @@
         this.organizations.splice(id, 1);
         this.save();
       },
-      // searchTermUpdate(searchQuery) {
-      //   this.searchTerm = searchQuery;
-      // },
+      searchTermUpdate(searchQuery) {
+        this.searchTerm = searchQuery;
+        if (this.searchTerm !== '') {
+          this.searchResultsEvents = this.events.filter(obj => obj.title.toLowerCase().includes(this.searchTerm.toLowerCase()));
+          this.searchResultsPlaces = this.places.filter(obj => obj.name.toLowerCase().includes(this.searchTerm.toLowerCase()));
+          this.searchResultsOrganizations = this.organizations.filter(obj => obj.name.toLowerCase().includes(this.searchTerm.toLowerCase()));
+
+          this.searchResultsOn = true;
+        }
+        else {
+          this.searchResultsEvents = [];
+          this.searchResultsPlaces = [];
+          this.searchResultsOrganizations = [];
+
+          this.searchResultsOn = false;
+        }
+      },
       save() {
         localStorage.events = JSON.stringify(this.events);
         localStorage.places = JSON.stringify(this.places);

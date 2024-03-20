@@ -25,9 +25,9 @@
           <li><button @click="showOrganizationsEmit">Организацию</button></li>
         </ul>
       </div>
-<!--      <div>-->
-<!--        <input type="text" v-model="searchQuery" placeholder="Введите запрос" @change="queryUpdate">-->
-<!--      </div>-->
+      <div>
+        <input type="text" v-model="searchQuery" placeholder="Введите запрос" @change="queryUpdate">
+      </div>
     </nav>
   </div>
 </template>
@@ -87,9 +87,9 @@ export default {
     showOrganizationsEmit () {
       this.$emit('toggle_organizations');
     },
-    // queryUpdate(){
-    //   this.$emit('send_search_query', this.searchQuery);
-    // }
+    queryUpdate(){
+      this.$emit('send_search_query', this.searchQuery);
+    }
   }
 }
 </script>

@@ -115,7 +115,16 @@
     <button type="submit" @click="organization_add">Добавить организацию</button>
   </div>
 
-  <event-map :events="events" v-if="showEvent"
+  <event-map :events="events" v-if="showEvent && searchResultsOn === false"
+             :selectedEvent="selectedEvent"
+             :showEvent="showEvent"
+             @event_transfer_to_death="event_down"
+             @event_close="eventClose"
+             @event_taking_part="eventTakingPart"
+             @event_un_parting="eventUnParting"
+             @save_event_edit="saveNewEventData"
+  />
+  <event-map :events="searchResultsEvents" v-if="showEvent && searchResultsOn === true"
              :selectedEvent="selectedEvent"
              :showEvent="showEvent"
              @event_transfer_to_death="event_down"
@@ -126,7 +135,15 @@
   />
 
   <place-window
-      :places="places" v-if="showPlace"
+      :places="places" v-if="showPlace && searchResultsOn === false"
+      :selectedPlace="selectedPlace"
+      :showPlace="showPlace"
+      @place_transfer_to_death="place_down"
+      @place_close="placeClose"
+      @save_place_edit="saveNewPlaceData"
+  />
+  <place-window
+      :places="searchResultsPlaces" v-if="showPlace && searchResultsOn === true"
       :selectedPlace="selectedPlace"
       :showPlace="showPlace"
       @place_transfer_to_death="place_down"
@@ -135,7 +152,15 @@
   />
 
   <organization-window
-      :organizations="organizations" v-if="showOrganization"
+      :organizations="organizations" v-if="showOrganization && searchResultsOn === false"
+      :selectedOrganization="selectedOrganization"
+      :showOrganization="showOrganization"
+      @organization_transfer_to_death="organization_down"
+      @organization_close="organizationClose"
+      @save_organization_edit="saveNewOrganizationData"
+  />
+  <organization-window
+      :organizations="searchResultsOrganizations" v-if="showOrganization && searchResultsOn === true"
       :selectedOrganization="selectedOrganization"
       :showOrganization="showOrganization"
       @organization_transfer_to_death="organization_down"
@@ -146,27 +171,55 @@
   <l-map id="map" ref="map" style="width:97vw;height:600px;"
          :zoom="zoom" :center="center"
          @click="updateMarkerLatLng" @moveend="updateData">
-    <l-marker v-if="sort_events"
+
+    <l-marker v-if="sort_events && searchResultsOn === false"
         v-for="(event_marker, id) in events"
         :lat-lng="event_marker.coords"
         @click="showEventDescription(event_marker.id)"
     >
       <l-icon :icon-url="eventMarkerIconUrl" :icon-size="[120, 120]"></l-icon>
     </l-marker>
-    <l-marker v-if="sort_places"
+    <l-marker v-if="sort_events && searchResultsOn === true"
+              v-for="(event_marker, id) in searchResultsEvents"
+              :lat-lng="event_marker.coords"
+              @click="showEventDescription(event_marker.id)"
+    >
+      <l-icon :icon-url="eventMarkerIconUrl" :icon-size="[120, 120]"></l-icon>
+    </l-marker>
+
+
+    <l-marker v-if="sort_places && searchResultsOn === false"
         v-for="(place_marker, id) in places"
         :lat-lng="place_marker.coords"
         @click="showPlaceDescription(place_marker.id)"
     >
       <l-icon :icon-url="placeMarkerIconUrl" :icon-size="[100, 100]"></l-icon>
     </l-marker>
-    <l-marker v-if="sort_organizations"
+    <l-marker v-if="sort_places && searchResultsOn === true"
+              v-for="(place_marker, id) in searchResultsPlaces"
+              :lat-lng="place_marker.coords"
+              @click="showPlaceDescription(place_marker.id)"
+    >
+      <l-icon :icon-url="placeMarkerIconUrl" :icon-size="[100, 100]"></l-icon>
+    </l-marker>
+
+
+    <l-marker v-if="sort_organizations && searchResultsOn === false"
         v-for="(organization_marker, id) in organizations"
         :lat-lng="organization_marker.coords"
         @click="showOrganizationDescription(organization_marker.id)"
     >
       <l-icon :icon-url="organizationMarkerIconUrl" :icon-size="[100, 100]"></l-icon>
     </l-marker>
+    <l-marker v-if="sort_organizations && searchResultsOn === true"
+              v-for="(organization_marker, id) in searchResultsOrganizations"
+              :lat-lng="organization_marker.coords"
+              @click="showOrganizationDescription(organization_marker.id)"
+    >
+      <l-icon :icon-url="organizationMarkerIconUrl" :icon-size="[100, 100]"></l-icon>
+    </l-marker>
+
+
     <l-tile-layer layer-type="base"
                   name="OpenStreetMap"
                   :url="url"
@@ -221,8 +274,23 @@ export default {
     sort_organizations : {
       type: Boolean
     },
+    searchResultsOn : {
+      type: Boolean
+    },
     searchTerm : {
       type: String
+    },
+    searchResultsEvents: {
+      type: Array,
+      required: true
+    },
+    searchResultsPlaces: {
+      type: Array,
+      required: true
+    },
+    searchResultsOrganizations: {
+      type: Array,
+      required: true
     },
   },
   components: {
@@ -299,9 +367,6 @@ export default {
         coord_y: '',
         coords: '',
       },
-      searchResultsArray1: [],
-      searchResultsArray2: [],
-      searchResultsArray3: [],
     };
   },
   methods : {
@@ -476,12 +541,6 @@ export default {
     closeOrganizationAddFormEmit() {
       this.$emit('organization_add_form_close');
     },
-    // searchObjects() {
-    //   this.searchResultsArray1 = this.events.filter(obj => obj.title.toLowerCase().includes(this.searchTerm.toLowerCase()));
-    //   this.searchResultsArray2 = this.places.filter(obj => obj.name.toLowerCase().includes(this.searchTerm.toLowerCase()));
-    //   this.searchResultsArray3 = this.organizations.filter(obj => obj.name.toLowerCase().includes(this.searchTerm.toLowerCase()));
-    //   console.log(1)
-    // }
   },
   mounted() {
 
