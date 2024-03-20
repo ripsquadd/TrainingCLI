@@ -9,8 +9,10 @@
     </div>
     <div>
       <label for="photo" class="input-file">Загрузить изображения</label>
-      <input type="file" name="eventPhoto" id="photo" accept="image/png, image/jpeg, image/jpg"
-             @change="FileUploadEvent" style="display: none;">
+      <input type="file" id="photo" multiple @change="handleFileUploadEvent" style="display: none">
+    </div>
+    <div v-for="(image, index) in new_event.photo" :key="index">
+      <img :src="image.url" alt="Uploaded Image">
     </div>
     <div>
       <label for="title" >Название события</label>
@@ -65,8 +67,10 @@
     </div>
     <div>
       <label for="photo" class="input-file">Загрузить изображения</label>
-      <input type="file" name="eventPhoto" id="photo" accept="image/png, image/jpeg, image/jpg"
-             @change="FileUploadPlace" style="display: none;">
+      <input type="file" id="photo" multiple @change="handleFileUploadPlace" style="display: none">
+    </div>
+    <div v-for="(image, index) in new_place.photo" :key="index">
+      <img :src="image.url" alt="Uploaded Image">
     </div>
     <div>
       <label for="title" >Название места</label>
@@ -97,8 +101,10 @@
     </div>
     <div>
       <label for="photo" class="input-file">Загрузить изображения</label>
-      <input type="file" name="eventPhoto" id="photo" accept="image/png, image/jpeg, image/jpg"
-             @change="FileUploadOrganization" style="display: none;">
+      <input type="file" id="photo" multiple @change="handleFileUploadOrganization" style="display: none">
+    </div>
+    <div v-for="(image, index) in new_organization.photo" :key="index">
+      <img :src="image.url" alt="Uploaded Image">
     </div>
     <div>
       <label for="title" >Название организации</label>
@@ -300,7 +306,7 @@ export default {
     EventMap,
     PlaceWindow,
     OrganizationWindow,
-    LIcon
+    LIcon,
   },
   data() {
     return {
@@ -333,7 +339,7 @@ export default {
         coord_x: '',
         coord_y: '',
         coords: '',
-        photo: '',
+        photo: [],
         address: '',
         place_type: '',
         selectedPlace: null,
@@ -345,13 +351,13 @@ export default {
         coord_x: '',
         coord_y: '',
         coords: '',
-        photo: '',
+        photo: [],
         address: '',
         selectedOrganization: null,
       },
       new_event: {
         id: '',
-        photo: '',
+        photo: [],
         title: '',
         place: '',
         date: '',
@@ -370,6 +376,36 @@ export default {
     };
   },
   methods : {
+    handleFileUploadEvent(event) {
+      const files = event.target.files;
+      for (let i = 0; i < files.length; i++) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.new_event.photo.push({ url: e.target.result });
+        };
+        reader.readAsDataURL(files[i]);
+      }
+    },
+    handleFileUploadPlace(event) {
+      const files = event.target.files;
+      for (let i = 0; i < files.length; i++) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.new_place.photo.push({ url: e.target.result });
+        };
+        reader.readAsDataURL(files[i]);
+      }
+    },
+    handleFileUploadOrganization(event) {
+      const files = event.target.files;
+      for (let i = 0; i < files.length; i++) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.new_organization.photo.push({ url: e.target.result });
+        };
+        reader.readAsDataURL(files[i]);
+      }
+    },
     saveNewEventData (edit_event, buff_id) {
       this.$emit('save_edit_to_app', edit_event, buff_id);
     },
@@ -409,18 +445,6 @@ export default {
       this.viewPoint.viewPointHeight = document.getElementById('map').clientHeight;
       this.viewPoint.viewPointWidth = document.getElementById('map').clientWidth;
       console.log("Новые данные о Вьюпинте: ",this.viewPoint);
-    },
-    FileUploadEvent(event) {
-      const file = event.target.files[0];
-      this.new_event.photo = URL.createObjectURL(file);
-    },
-    FileUploadPlace(event) {
-      const file = event.target.files[0];
-      this.new_place.photo = URL.createObjectURL(file);
-    },
-    FileUploadOrganization(event) {
-      const file = event.target.files[0];
-      this.new_organization.photo = URL.createObjectURL(file);
     },
     event_add() {
       if (this.new_event.coord_x && this.new_event.coord_y) {

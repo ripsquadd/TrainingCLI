@@ -9,8 +9,10 @@
         <section>Редактировать организацию</section>
         <div>
           <label for="photo" class="input-file">Загрузить изображения</label>
-          <input type="file" name="eventPhoto" id="photo" accept="image/png, image/jpeg, image/jpg"
-                 @change="FileUploadEditOrganization" style="display: none;">
+          <input type="file" id="photo" multiple @change="handleFileUploadEditOrganization" style="display: none">
+        </div>
+        <div v-for="(image, index) in edit_organization.photo" :key="index">
+          <img :src="image.url" alt="Uploaded Image">
         </div>
         <div>
           <label for="title" >Название организации</label>
@@ -33,8 +35,8 @@
         <div class="close-btn">
           <button @click="closeOrganizationEmit">X</button>
         </div>
-        <div class="img-content">
-          <img :src="organization.photo">
+        <div v-for="(file, index) in organization.photo" :key="index">
+          <img :src="file.url" alt="Uploaded image">
         </div>
         <p class="event-title">{{organization.name}}</p>
         <div class="first">Описание: <p class="second">{{organization.description}}</p></div>
@@ -77,9 +79,15 @@ export default {
     }
   },
   methods: {
-    FileUploadEditOrganization(event) {
-      const file = event.target.files[0];
-      this.edit_organization.photo = URL.createObjectURL(file);
+    handleFileUploadEditOrganization(event) {
+      const files = event.target.files;
+      for (let i = 0; i < files.length; i++) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.edit_organization.photo.push({ url: e.target.result });
+        };
+        reader.readAsDataURL(files[i]);
+      }
     },
     organizationDelete(id) {
       this.$emit('organization_transfer_to_death', id);

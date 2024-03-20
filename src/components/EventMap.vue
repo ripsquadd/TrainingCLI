@@ -8,9 +8,11 @@
         </div>
         <section>Редактировать событие</section>
         <div>
-          <label for="photo" class="input-file">Загрузить изабражения</label>
-          <input type="file" name="eventPhoto" id="photo" accept="image/png, image/jpeg, image/jpg"
-                 @change="FileUploadEditEvent" style="display: none;">
+          <label for="photo" class="input-file">Загрузить изображения</label>
+          <input type="file" id="photo" multiple @change="handleFileUploadEditEvent" style="display: none">
+        </div>
+        <div v-for="(image, index) in edit_event.photo" :key="index">
+          <img :src="image.url" alt="Uploaded Image">
         </div>
         <div>
           <label for="title" >Название события</label>
@@ -57,8 +59,8 @@
         <div class="close-btn">
           <button @click="closeEventEmit">X</button>
         </div>
-        <div class="img-content">
-          <img :src="event.photo">
+        <div v-for="(file, index) in event.photo" :key="index">
+          <img :src="file.url" alt="Uploaded image">
         </div>
         <p class="event-title">{{event.title}}</p>
         <div class="first">Место проведения: <p class="second">{{event.place}}</p></div>
@@ -128,9 +130,15 @@ export default {
     closeEventEmit() {
       this.$emit('event_close');
     },
-    FileUploadEditEvent(event) {
-      const file = event.target.files[0];
-      this.edit_event.photo = URL.createObjectURL(file);
+    handleFileUploadEditEvent(event) {
+      const files = event.target.files;
+      for (let i = 0; i < files.length; i++) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.edit_event.photo.push({ url: e.target.result });
+        };
+        reader.readAsDataURL(files[i]);
+      }
     },
     cancel_event() {
       this.event_edit_form = !this.event_edit_form;

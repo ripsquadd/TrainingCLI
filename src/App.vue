@@ -45,16 +45,13 @@
 
 <script>
   import EventAdd from "@/components/EventAdd";
-  import EventMap from "@/components/EventMap";
   import IntMap from "@/components/IntMap";
   import TopBar from "@/components/TopBar";
   import CustomFooter from "@/components/CustomFooter";
-  import PlaceWindow from "@/components/PlaceWindow";
-  import OrganizationWindow from "@/components/OrganizationWindow";
   export default {
     name: "App",
     components: {
-      TopBar, EventAdd, EventMap, IntMap, CustomFooter, PlaceWindow, OrganizationWindow
+      TopBar, EventAdd, IntMap, CustomFooter,
     },
     data () {
       return {

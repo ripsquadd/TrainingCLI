@@ -9,8 +9,10 @@
         <section>Редактировать место</section>
         <div>
           <label for="photo" class="input-file">Загрузить изображения</label>
-          <input type="file" name="eventPhoto" id="photo" accept="image/png, image/jpeg, image/jpg"
-                 @change="FileUploadEditPlace" style="display: none;">
+          <input type="file" id="photo" multiple @change="handleFileUploadEditPlace" style="display: none">
+        </div>
+        <div v-for="(image, index) in edit_place.photo" :key="index">
+          <img :src="image.url" alt="Uploaded Image">
         </div>
         <div>
           <label for="title" >Название места</label>
@@ -37,8 +39,8 @@
         <div class="close-btn">
           <button @click="closePlaceEmit">X</button>
         </div>
-        <div class="img-content">
-          <img :src="place.photo">
+        <div v-for="(file, index) in place.photo" :key="index">
+          <img :src="file.url" alt="Uploaded image">
         </div>
         <p class="event-title">{{place.name}}</p>
         <div class="first">Описание: <p class="second">{{place.description}}</p></div>
@@ -83,9 +85,15 @@ export default {
     }
   },
   methods: {
-    FileUploadEditPlace(event) {
-      const file = event.target.files[0];
-      this.edit_place.photo = URL.createObjectURL(file);
+    handleFileUploadEditPlace(event) {
+      const files = event.target.files;
+      for (let i = 0; i < files.length; i++) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.edit_place.photo.push({ url: e.target.result });
+        };
+        reader.readAsDataURL(files[i]);
+      }
     },
     placeDelete(id) {
       this.$emit('place_transfer_to_death', id);
