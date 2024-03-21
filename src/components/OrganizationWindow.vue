@@ -11,8 +11,17 @@
           <label for="photo" class="input-file">Загрузить изображения</label>
           <input type="file" id="photo" multiple @change="handleFileUploadEditOrganization" style="display: none">
         </div>
-        <div v-for="(image, index) in edit_organization.photo" :key="index">
-          <img :src="image.url" alt="Uploaded Image">
+        <div>
+          <Carousel style="width: 400px">
+            <Slide v-for="image in edit_organization.photo" :key="image">
+              <img class="carousel__item" :src="image.url" alt="Uploaded Image">
+            </Slide>
+
+            <template #addons>
+              <Navigation />
+              <Pagination />
+            </template>
+          </Carousel>
         </div>
         <div>
           <label for="title" >Название организации</label>
@@ -35,8 +44,17 @@
         <div class="close-btn">
           <button @click="closeOrganizationEmit">X</button>
         </div>
-        <div v-for="(file, index) in organization.photo" :key="index">
-          <img :src="file.url" alt="Uploaded image">
+        <div>
+          <Carousel style="width: 400px">
+            <Slide v-for="image in organization.photo" :key="image">
+              <img class="carousel__item" :src="image.url" alt="Uploaded Image">
+            </Slide>
+
+            <template #addons>
+              <Navigation />
+              <Pagination />
+            </template>
+          </Carousel>
         </div>
         <p class="event-title">{{organization.name}}</p>
         <div class="first">Описание: <p class="second">{{organization.description}}</p></div>
@@ -50,8 +68,16 @@
 </template>
 
 <script>
+import 'vue3-carousel/dist/carousel.css'
+import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
 export default {
   name: "OrganizationWindow",
+  components: {
+    Carousel,
+    Slide,
+    Pagination,
+    Navigation,
+  },
   emits: ['organization_transfer_to_death', 'organization_close', 'save_organization_edit'],
   props: {
     organizations: {
@@ -264,5 +290,25 @@ a:hover {
   border: none;
   border-radius: 5px;
   height: 20px;
+}
+.carousel__item {
+  min-height: 200px;
+  background-color: var(--vc-clr-primary);
+  color: var(--vc-clr-white);
+  font-size: 20px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.carousel__slide {
+  padding: 10px;
+}
+
+.carousel__prev,
+.carousel__next {
+  box-sizing: content-box;
+  border: 5px solid white;
 }
 </style>

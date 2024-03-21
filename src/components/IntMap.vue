@@ -11,9 +11,6 @@
       <label for="photo" class="input-file">Загрузить изображения</label>
       <input type="file" id="photo" multiple @change="handleFileUploadEvent" style="display: none">
     </div>
-    <div v-for="(image, index) in new_event.photo" :key="index">
-      <img :src="image.url" alt="Uploaded Image">
-    </div>
     <div>
       <label for="title" >Название события</label>
       <input type="text" name="eventTitle" id="title" v-model="new_event.title">
@@ -69,9 +66,6 @@
       <label for="photo" class="input-file">Загрузить изображения</label>
       <input type="file" id="photo" multiple @change="handleFileUploadPlace" style="display: none">
     </div>
-    <div v-for="(image, index) in new_place.photo" :key="index">
-      <img :src="image.url" alt="Uploaded Image">
-    </div>
     <div>
       <label for="title" >Название места</label>
       <input type="text" name="eventTitle" id="title" v-model="new_place.name">
@@ -102,9 +96,6 @@
     <div>
       <label for="photo" class="input-file">Загрузить изображения</label>
       <input type="file" id="photo" multiple @change="handleFileUploadOrganization" style="display: none">
-    </div>
-    <div v-for="(image, index) in new_organization.photo" :key="index">
-      <img :src="image.url" alt="Uploaded Image">
     </div>
     <div>
       <label for="title" >Название организации</label>
