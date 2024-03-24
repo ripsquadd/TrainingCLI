@@ -3,11 +3,23 @@
       @event_add_form_show="eventFormShow"
       @place_add_form_show="placeFormShow"
       @organization_add_form_show="organizationFormShow"
+      @user_add_form_show="userCreateFormShow"
+      @user_login_form_show="userLoginFormShow"
       @toggle_all="allShow"
       @toggle_events="eventsShow"
       @toggle_places="placesShow"
       @toggle_organizations="organizationsShow"
       @send_search_query="searchTermUpdate"
+      @user_logout="userLogout"
+      :userLogin="userLogin"
+  />
+  <registration-form v-if="user_create_form_on === true"
+      @user_create="create_user"
+      @user_add_form_close="userCreateFormClose"
+  />
+  <login-form v-if="user_login_form_on === true"
+      @user_login="login_user"
+      @user_login_form_close="userLoginFormClose"
   />
   <div class="content">
     <int-map :events="events"
@@ -48,20 +60,27 @@
   import IntMap from "@/components/IntMap";
   import TopBar from "@/components/TopBar";
   import CustomFooter from "@/components/CustomFooter";
+  import RegistrationForm from "@/components/RegistrationForm";
+  import LoginForm from "@/components/LoginForm";
   export default {
     name: "App",
     components: {
-      TopBar, EventAdd, IntMap, CustomFooter,
+      TopBar, EventAdd, IntMap, CustomFooter, RegistrationForm, LoginForm
     },
     data () {
       return {
         events: [],
         places: [],
         organizations: [],
+        users: [],
+        userLogin: false,
+        showRegistration: true,
         top_bar_on: true,
         event_form_on: false,
         place_form_on: false,
         organization_form_on: false,
+        user_create_form_on: false,
+        user_login_form_on: false,
         sort_events: true,
         sort_places: true,
         sort_organizations: true,
@@ -122,6 +141,22 @@
         this.top_bar_on = true;
         this.organization_form_on = false;
       },
+      userCreateFormShow() {
+        this.top_bar_on = false;
+        this.user_create_form_on = true;
+      },
+      userCreateFormClose() {
+        this.top_bar_on = true;
+        this.user_create_form_on = false;
+      },
+      userLoginFormShow() {
+        this.top_bar_on = false;
+        this.user_login_form_on = true;
+      },
+      userLoginFormClose() {
+        this.top_bar_on = true;
+        this.user_login_form_on = false;
+      },
       allShow() {
         this.sort_events = true;
         this.sort_places = true;
@@ -154,7 +189,22 @@
         this.organizations.push(new_organization)
         this.save();
       },
-
+      create_user(new_user) {
+        this.users.push(new_user)
+        this.save();
+      },
+      login_user(login_data) {
+        this.users.forEach(user => {
+          if (user.login === login_data.login && user.password === login_data.password) {
+            this.user_login_form_on = false;
+            this.top_bar_on = true;
+            this.userLogin = true;
+          }
+        });
+      },
+      userLogout() {
+        this.userLogin = false;
+      },
       event_teleport_to_death(id) {
         this.events.splice(id, 1);
         this.save();
@@ -188,6 +238,7 @@
         localStorage.events = JSON.stringify(this.events);
         localStorage.places = JSON.stringify(this.places);
         localStorage.organizations = JSON.stringify(this.organizations);
+        localStorage.users = JSON.stringify(this.users);
       }
     },
     mounted() {
@@ -199,6 +250,9 @@
       }
       if (localStorage.organizations) {
         this.organizations = JSON.parse(localStorage.organizations)
+      }
+      if (localStorage.users) {
+        this.users = JSON.parse(localStorage.users)
       }
     }
   }

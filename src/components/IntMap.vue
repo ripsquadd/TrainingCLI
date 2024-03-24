@@ -220,7 +220,9 @@
     <l-tile-layer layer-type="base"
                   name="OpenStreetMap"
                   :url="url"
-                  :attribution="attribution">
+                  :attribution="attribution"
+                  :attributionControl="attributionControl"
+    >
     </l-tile-layer>
   </l-map>
 </template>
@@ -307,7 +309,8 @@ export default {
       zoom: 11,
       center: [56.4853, 84.9885],
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-      attribution: 'Spotlight',
+      attribution: '',
+      attributionControl: false,
       eventMarkerIconUrl: require("./components_assets/event.png"),
       placeMarkerIconUrl: require("./components_assets/place.png"),
       organizationMarkerIconUrl: require("./components_assets/organization.png"),

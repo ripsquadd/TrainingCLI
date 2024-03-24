@@ -25,8 +25,13 @@
           <li><button @click="showOrganizationsEmit">Организацию</button></li>
         </ul>
       </div>
+      <div class="search-div">
+        <input class="search-input" type="text" v-model="searchQuery" placeholder="Введите запрос" @change="queryUpdate">
+      </div>
       <div>
-        <input type="text" v-model="searchQuery" placeholder="Введите запрос" @change="queryUpdate">
+        <button v-if="userLogin === false" @click="showUserAddFormEmit">Регистрация</button>
+        <button v-if="userLogin === false" @click="showUserLoginFormEmit">Вход</button>
+        <button v-if="userLogin === true" @click="userLogotEmit">Выход</button>
       </div>
     </nav>
   </div>
@@ -36,8 +41,17 @@
 export default {
   name: "TopBar",
   emits: ['event_add_form_show', 'place_add_form_show', 'organization_add_form_show',
-    'toggle_all', 'toggle_events', 'toggle_places', 'toggle_organizations', 'send_search_query'
+      'toggle_all', 'toggle_events', 'toggle_places', 'toggle_organizations', 'send_search_query',
+      'user_add_form_show', 'user_login_form_show', 'user_logout'
   ],
+  props: {
+    showRegistration : {
+      type: Boolean
+    },
+    userLogin : {
+      type: Boolean
+    },
+  },
   data() {
     return {
       originalImageSrc: require("./components_assets/logo.png"),
@@ -74,6 +88,15 @@ export default {
     showOrganizationAddFormEmit() {
       this.showCreateMenu = !this.showCreateMenu;
       this.$emit('organization_add_form_show');
+    },
+    showUserAddFormEmit() {
+      this.$emit('user_add_form_show');
+    },
+    showUserLoginFormEmit() {
+      this.$emit('user_login_form_show');
+    },
+    userLogotEmit() {
+      this.$emit('user_logout');
     },
     showAllEmit () {
       this.$emit('toggle_all');
@@ -132,5 +155,14 @@ ul {
   position: absolute;
   z-index: 1;
   left: 5%
+}
+.search-div {
+  display: flex;
+}
+.search-input {
+  background: #1B1212;
+  color: #C4A484;
+  border: none;
+  font-family: "TF2 Build", Serif;
 }
 </style>

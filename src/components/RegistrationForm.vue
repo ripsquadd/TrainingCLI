@@ -1,0 +1,136 @@
+<template>
+  <div  class="event-add">
+    <div class="close-btn">
+      <button @click="closeUserAddFormEmit">X</button>
+    </div>
+    <section>Регистрация</section>
+    <div>
+      <label for="login">Логин</label>
+      <input type="text" id="login" v-model="new_user.login">
+    </div>
+    <div>
+      <label for="email" >E-mail</label>
+      <input type="email" name="email" id="email" v-model="new_user.email">
+    </div>
+    <div>
+      <label for="password">Пароль</label>
+      <input type="password" name="password" id="password" v-model="new_user.password">
+    </div>
+    <button type="submit" @click="user_add">Зарегистрироваться</button>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "RegistrationForm",
+  emits: [
+      'user_create', 'user_add_form_close'
+  ],
+  data() {
+    return {
+      new_user: {
+        id: '',
+        login: '',
+        email: '',
+        password: '',
+      }
+    }
+  },
+  methods: {
+    closeUserAddFormEmit() {
+      this.$emit('user_add_form_close');
+    },
+    user_add() {
+      if (this.new_user.login && this.new_user.password && this.new_user.email) {
+        this.new_user.id = Date.now();
+        this.$emit('user_create', this.new_user);
+        this.new_user = {
+          id: '',
+          login: '',
+          email: '',
+          password: '',
+        }
+        this.$emit('user_add_form_close');
+      }
+    },
+  }
+}
+</script>
+
+<style scoped>
+.event-add {
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+  margin: 10px;
+  border-radius: 5px;
+  flex-wrap: nowrap;
+  width: -moz-min-content;
+  width: min-content;
+  padding: 10px;
+  background: #1B1212;
+  font-size: 14pt;
+  justify-content: space-between;
+  z-index: 2;
+  position: absolute;
+  left: 5%;
+  top: 6%;
+}
+.event-add > div {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  flex-wrap: nowrap;
+}
+.event-add > section {
+  color: #C4A484; ;
+  text-align: center;
+  font-size: 20pt;
+}
+.event-add > div > label {
+  color: #C4A484;
+  padding: 10px;
+  width: max-content;
+}
+.event-add > div > p {
+  color: #C4A484;
+  padding: 10px;
+}
+.event-add > div > input {
+  color: #ffffff;
+  background: black;
+  border: none;
+  border-radius: 5px;
+  height: 20px;
+}
+.event-add > button {
+  margin: 10px;
+  border: none;
+  background: #1B1212;
+  color: #FFA500 ;
+  text-shadow: #FF5733 1px 0 15px;
+  font-size: 14pt;
+}
+.event-add > button:hover  {
+  color: #FF69B4;
+  text-shadow: #FF10F0 1px 0 20px;
+}
+.close-btn {
+  display: flex;
+  flex-direction: row-reverse;
+}
+.close-btn > button {
+  display: flex;
+  flex-direction: row-reverse;
+  margin: 5px;
+  border: none;
+  background: #1B1212;
+  color: #FFA500 ;
+  text-shadow: #FF5733 1px 0 15px;
+  font-size: 14pt;
+}
+.close-btn > button:hover {
+  color: #FF69B4;
+  text-shadow: #FF10F0 1px 0 20px;
+}
+</style>
