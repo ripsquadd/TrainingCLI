@@ -64,8 +64,8 @@
         <div class="first">Описание: <p class="second">{{place.description}}</p></div>
         <div class="first">Адрес: <p class="second">{{place.address}}</p></div>
         <div class="first">Тип места: <p class="second">{{place.place_type}}</p></div>
-        <button @click="startPlaceEdit(id)">Редактировать место</button>
-        <button @click="placeDelete(id)">Удалить место</button>
+        <button v-if="userLogin" @click="startPlaceEdit(id)">Редактировать место</button>
+        <button v-if="userLogin" @click="placeDelete(id)">Удалить место</button>
       </div>
     </div>
 
@@ -88,6 +88,9 @@ export default {
     places: {
       type: Array,
       required: true
+    },
+    userLogin : {
+      type: Boolean
     },
     selectedPlace : {
 

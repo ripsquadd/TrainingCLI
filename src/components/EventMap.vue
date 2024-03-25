@@ -90,10 +90,10 @@
         <div class="first">Тэги: <p class="second">{{event.event_tags}}</p></div>
         <div class="first">Количество участвующих: <p class="second">{{event.souls_count}}</p></div>
         <p class="link-content">Ссылка: <a href="{{event.link}}">{{event.link}}</a> </p>
-        <button @click="eventTakePart(id)">Участвовать</button>
-        <button @click="eventUnPart(id)">Перестать участвовать</button>
-        <button @click="startEventEdit(id)">Редактировать событие</button>
-        <button @click="eventDelete(id)">Удалить событие</button>
+        <button v-if="userLogin" @click="eventTakePart(id)">Участвовать</button>
+        <button v-if="userLogin" @click="eventUnPart(id)">Перестать участвовать</button>
+        <button v-if="userLogin" @click="startEventEdit(id)">Редактировать событие</button>
+        <button v-if="userLogin" @click="eventDelete(id)">Удалить событие</button>
       </div>
     </div>
 
@@ -116,6 +116,9 @@ export default {
     events: {
       type: Array,
       required: true
+    },
+    userLogin : {
+      type: Boolean
     },
     selectedEvent : {
 

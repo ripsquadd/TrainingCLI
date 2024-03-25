@@ -1,6 +1,6 @@
 <template>
 <div class="custom-footer">
-  <p class="title">Spotlight Prototype Close Beta 0.6</p>
+  <p class="title">Spotlight Prototype Close Beta 0.6.1</p>
 
   <div class="pre-container">
 

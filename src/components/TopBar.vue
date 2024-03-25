@@ -9,7 +9,7 @@
     </a>
     <nav>
       <div>
-        <button @click="toggleCreateMenu">Создать</button>
+        <button v-if="userLogin === true" @click="toggleCreateMenu">Создать</button>
         <ul v-if="showCreateMenu">
           <li><button @click="showEventAddFormEmit">Событие</button></li>
           <li><button @click="showPlaceAddFormEmit">Место</button></li>

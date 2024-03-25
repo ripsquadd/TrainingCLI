@@ -4,6 +4,9 @@
       <button @click="closeUserLoginFormEmit">X</button>
     </div>
     <section>Вход</section>
+    <div v-if="message">
+      <p>{{message}}</p>
+    </div>
     <div>
       <label for="login">Логин</label>
       <input type="text" id="login" v-model="login_user.login">
@@ -24,6 +27,7 @@ export default {
   ],
   data() {
     return {
+      message: '',
       login_user: {
         login: '',
         password: '',
@@ -42,6 +46,10 @@ export default {
           login: '',
           password: '',
         }
+        this.message = null;
+      }
+      else {
+        this.message = 'Заполните необходимые поля';
       }
     },
   }

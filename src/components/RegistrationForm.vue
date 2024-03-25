@@ -4,6 +4,9 @@
       <button @click="closeUserAddFormEmit">X</button>
     </div>
     <section>Регистрация</section>
+    <div v-if="message">
+      <p>{{message}}</p>
+    </div>
     <div>
       <label for="login">Логин</label>
       <input type="text" id="login" v-model="new_user.login">
@@ -28,6 +31,7 @@ export default {
   ],
   data() {
     return {
+      message: null,
       new_user: {
         id: '',
         login: '',
@@ -50,7 +54,11 @@ export default {
           email: '',
           password: '',
         }
+        this.message = null;
         this.$emit('user_add_form_close');
+      }
+      else {
+        this.message = 'Заполните необходимые поля';
       }
     },
   }

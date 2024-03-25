@@ -36,6 +36,7 @@
              :searchResultsEvents="searchResultsEvents"
              :searchResultsPlaces="searchResultsPlaces"
              :searchResultsOrganizations="searchResultsOrganizations"
+             :userLogin="userLogin"
              @event_create="create_event"
              @place_create="create_place"
              @organization_create="create_organization"

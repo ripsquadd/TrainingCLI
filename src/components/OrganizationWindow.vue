@@ -59,8 +59,8 @@
         <p class="event-title">{{organization.name}}</p>
         <div class="first">Описание: <p class="second">{{organization.description}}</p></div>
         <div class="first">Адрес: <p class="second">{{organization.address}}</p></div>
-        <button @click="startOrganizationEdit(id)">Редактировать организацию</button>
-        <button @click="organizationDelete(id)">Удалить организацию</button>
+        <button v-if="userLogin" @click="startOrganizationEdit(id)">Редактировать организацию</button>
+        <button v-if="userLogin" @click="organizationDelete(id)">Удалить организацию</button>
       </div>
     </div>
 
@@ -83,6 +83,9 @@ export default {
     organizations: {
       type: Array,
       required: true
+    },
+    userLogin : {
+      type: Boolean
     },
     selectedOrganization : {
 

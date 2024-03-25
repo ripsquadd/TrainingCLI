@@ -1,9 +1,12 @@
 <template>
-  <div  class="event-add" v-if="event_form_on">
+  <div  class="event-add" v-if="event_form_on && userLogin">
     <div class="close-btn">
       <button @click="closeEventAddFormEmit">X</button>
     </div>
     <section>Новое событие</section>
+    <div v-if="message">
+      <p>{{message}}</p>
+    </div>
     <div>
       <p>Нажмите на карту чтобы выбрать координаты события</p>
     </div>
@@ -54,11 +57,14 @@
     <button type="submit" @click="event_add">Добавить событие</button>
   </div>
 
-  <div  class="event-add" v-if="place_form_on">
+  <div  class="event-add" v-if="place_form_on && userLogin">
     <div class="close-btn">
       <button @click="closePlaceAddFormEmit">X</button>
     </div>
     <section>Новое место</section>
+    <div v-if="message">
+      <p>{{message}}</p>
+    </div>
     <div>
       <p>Нажмите на карту чтобы выбрать координаты места</p>
     </div>
@@ -85,11 +91,14 @@
     <button type="submit" @click="place_add">Добавить место</button>
   </div>
 
-  <div  class="event-add" v-if="organization_form_on">
+  <div  class="event-add" v-if="organization_form_on && userLogin">
     <div class="close-btn">
       <button @click="closeOrganizationAddFormEmit">X</button>
     </div>
     <section>Новая организация</section>
+    <div v-if="message">
+      <p>{{message}}</p>
+    </div>
     <div>
       <p>Нажмите на карту чтобы выбрать координаты организации</p>
     </div>
@@ -115,6 +124,7 @@
   <event-map :events="events" v-if="showEvent && searchResultsOn === false"
              :selectedEvent="selectedEvent"
              :showEvent="showEvent"
+             :userLogin="userLogin"
              @event_transfer_to_death="event_down"
              @event_close="eventClose"
              @event_taking_part="eventTakingPart"
@@ -124,6 +134,7 @@
   <event-map :events="searchResultsEvents" v-if="showEvent && searchResultsOn === true"
              :selectedEvent="selectedEvent"
              :showEvent="showEvent"
+             :userLogin="userLogin"
              @event_transfer_to_death="event_down"
              @event_close="eventClose"
              @event_taking_part="eventTakingPart"
@@ -135,6 +146,7 @@
       :places="places" v-if="showPlace && searchResultsOn === false"
       :selectedPlace="selectedPlace"
       :showPlace="showPlace"
+      :userLogin="userLogin"
       @place_transfer_to_death="place_down"
       @place_close="placeClose"
       @save_place_edit="saveNewPlaceData"
@@ -143,6 +155,7 @@
       :places="searchResultsPlaces" v-if="showPlace && searchResultsOn === true"
       :selectedPlace="selectedPlace"
       :showPlace="showPlace"
+      :userLogin="userLogin"
       @place_transfer_to_death="place_down"
       @place_close="placeClose"
       @save_place_edit="saveNewPlaceData"
@@ -152,6 +165,7 @@
       :organizations="organizations" v-if="showOrganization && searchResultsOn === false"
       :selectedOrganization="selectedOrganization"
       :showOrganization="showOrganization"
+      :userLogin="userLogin"
       @organization_transfer_to_death="organization_down"
       @organization_close="organizationClose"
       @save_organization_edit="saveNewOrganizationData"
@@ -160,6 +174,7 @@
       :organizations="searchResultsOrganizations" v-if="showOrganization && searchResultsOn === true"
       :selectedOrganization="selectedOrganization"
       :showOrganization="showOrganization"
+      :userLogin="userLogin"
       @organization_transfer_to_death="organization_down"
       @organization_close="organizationClose"
       @save_organization_edit="saveNewOrganizationData"
@@ -276,6 +291,9 @@ export default {
     searchResultsOn : {
       type: Boolean
     },
+    userLogin : {
+      type: Boolean
+    },
     searchTerm : {
       type: String
     },
@@ -303,6 +321,7 @@ export default {
   },
   data() {
     return {
+      message: null,
       showEvent: true,
       showPlace: true,
       showOrganization: true,
@@ -441,7 +460,10 @@ export default {
       console.log("Новые данные о Вьюпинте: ",this.viewPoint);
     },
     event_add() {
-      if (this.new_event.coord_x && this.new_event.coord_y) {
+      if (this.new_event.photo && this.new_event.title && this.new_event.place &&
+          this.new_event.date && this.new_event.time && this.new_event.short_detail &&
+          this.new_event.age_rating && this.new_event.event_type && this.new_event.event_tags &&
+          this.new_event.coord_x && this.new_event.coord_y) {
         this.new_event.id = Date.now();
         this.$emit('event_create', this.new_event);
         this.new_event = {
@@ -462,11 +484,17 @@ export default {
           coords: '',
         }
         this.new_event.photo = '';
+        this.message = null;
         this.$emit('event_add_form_close');
+      }
+      else {
+        this.message = 'Заполните необходимые поля';
       }
     },
     place_add() {
-      if (this.new_place.coord_x && this.new_place.coord_y) {
+      if (this.new_place.name && this.new_place.description && this.new_place.photo
+          && this.new_place.address && this.new_place.place_type && this.new_place.coord_x
+          && this.new_place.coord_y) {
         this.new_place.id = Date.now();
         this.$emit('place_create', this.new_place);
         this.new_place = {
@@ -481,11 +509,17 @@ export default {
           place_type: ''
         }
         this.new_place.photo = '';
+        this.message = null;
         this.$emit('place_add_form_close');
+      }
+      else {
+        this.message = 'Заполните необходимые поля';
       }
     },
     organization_add() {
-      if (this.new_organization.coord_x && this.new_organization.coord_y) {
+      if (this.new_organization.name && this.new_organization.description && this.new_organization.photo
+          && this.new_organization.address && this.new_organization.coord_x
+          && this.new_organization.coord_y) {
         this.new_organization.id = Date.now();
         this.$emit('organization_create', this.new_organization);
         this.new_organization = {
@@ -499,7 +533,11 @@ export default {
           address: '',
         }
         this.new_organization.photo = '';
+        this.message = null;
         this.$emit('organization_add_form_close');
+      }
+      else {
+        this.message = 'Заполните необходимые поля';
       }
     },
     event_down(id) {
