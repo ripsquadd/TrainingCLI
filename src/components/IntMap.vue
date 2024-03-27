@@ -462,7 +462,7 @@ export default {
     event_add() {
       if (this.new_event.photo && this.new_event.title && this.new_event.place &&
           this.new_event.date && this.new_event.time && this.new_event.short_detail &&
-          this.new_event.age_rating && this.new_event.event_type && this.new_event.event_tags &&
+          this.new_event.event_type && this.new_event.event_tags &&
           this.new_event.coord_x && this.new_event.coord_y) {
         this.new_event.id = Date.now();
         this.$emit('event_create', this.new_event);

@@ -91,7 +91,7 @@
         <div class="first">Количество участвующих: <p class="second">{{event.souls_count}}</p></div>
         <p class="link-content">Ссылка: <a href="{{event.link}}">{{event.link}}</a> </p>
         <button v-if="userLogin" @click="eventTakePart(id)">Участвовать</button>
-        <button v-if="userLogin" @click="eventUnPart(id)">Перестать участвовать</button>
+        <button v-if="userLogin" @click="eventUnPart(id)">Прекратить участвовать</button>
         <button v-if="userLogin" @click="startEventEdit(id)">Редактировать событие</button>
         <button v-if="userLogin" @click="eventDelete(id)">Удалить событие</button>
       </div>
